@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Stores{% endblock %}
+
+{% block body %}
+  <div class="container">
+  <h2>Stores</h2>                                                      
+  <div class="table-responsive">          
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Store</th>
+        <th>Status</th>
+        <th>Info</th>
+        <th>Coupons</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for store in stores %}
+      <tr>
+        <td>{{ store.name }}</td>
+        <td>{{ store.status }}</td>
+        <td><a href="info.php?store={{ store.id }}">Info</a></td>
+        <td><a href="coupons.php?store={{ store.id }}">Coupons</a></td>
+        <td><a href="delete.php?store={{ store.id }}">Delete</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+{% endblock %}
