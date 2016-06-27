@@ -593,15 +593,4 @@ class Customer
     {
         return $this->getStatus() == self::CUSTOMER_ACTIVE;
     }
-
-    /**
-     * Return  link for email validation
-     *
-     * @return string
-     * @author Michael Strohyi
-     **/
-    public function getValidationLink()
-    {
-        return '/accounts/verify.php?id=' . $this->getId() . '&hash=' . $this->getHash();
-    }
 }

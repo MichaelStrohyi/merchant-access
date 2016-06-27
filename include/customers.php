@@ -11,6 +11,7 @@ function customerEmailConfirmation($customer)
 {
     $subject = 'Verify your registration at ' . SIGNUP_SERVER;
     $message = getEmailMessage('account_verification', $customer);
+    echo $message;
     if (!(defined('ENVIRONMENT') && ENVIRONMENT == 'development')) {
         mail($customer->getEmail(), $subject, $message);
     }
@@ -29,6 +30,6 @@ function getEmailMessage($template, $customer)
     return getTwig()->render("Email/${template}.html.twig", [
             'customer' => $customer,
             'server' => SIGNUP_SERVER,
-            'validation_link' => $customer->getValidationLink(),
+            'validation_link' => getPath('validation', ['customer' => $customer]),
             ]);
 }

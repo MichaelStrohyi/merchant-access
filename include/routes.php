@@ -18,10 +18,16 @@ function getPath($route_name, $params = [])
         case 'login':
             $location = '/accounts/login.php';
             break;
+
         case 'registration':
             $location = '/registration.php';
             break;
-        
+            
+        case 'validation':
+            $customer = $params['customer'];
+            $location = '/accounts/verify.php?id=' . $customer->getId() . '&hash=' . $customer->getHash();
+            break;
+
         default:
             $location = null;
             break;
