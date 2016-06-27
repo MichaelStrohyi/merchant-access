@@ -593,4 +593,23 @@ class Customer
     {
         return $this->getStatus() == self::CUSTOMER_ACTIVE;
     }
+
+    /**
+     * Return array of App\Store associated with current customer
+     *
+     * @return array
+     * @author Michael Strohyi
+     **/
+    public function getStores()
+    {
+        /// stub
+        $result = [];
+
+        $store = new Store(1);
+        $result [] = $store;
+        $store = new Store(2);
+        $result [] = $store;
+     
+        return $result;
+    }
 }
