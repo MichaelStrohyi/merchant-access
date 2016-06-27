@@ -10,5 +10,5 @@ $stores = $customer->getStores();
 
 #render page with list of customer's stores
 echo $twig->render('Panel/stores.html.twig', [
-    'stores' => $stores
+    'customer' => $customer
     ]);
