@@ -55,18 +55,6 @@ function getTwig()
 }
 
 /**
- * Return  link for email validation
- *
- * @param App\Customer $customer
- * @return string
- * @author Michael Strohyi
- **/
-function getValidationLink($customer)
-{
-    return '/accounts/verify.php?id=' . $customer->getId() . '&hash=' . $customer->getHash();
-}
-
-/**
  * Get customer's id' from session and return object Customer with data for this customer's id
  *
  * @return App\Customer

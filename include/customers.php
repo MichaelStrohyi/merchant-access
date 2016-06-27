@@ -29,6 +29,6 @@ function getEmailMessage($template, $customer)
     return getTwig()->render("Email/${template}.html.twig", [
             'customer' => $customer,
             'server' => SIGNUP_SERVER,
-            'validation_link' => getValidationLink($customer),
+            'validation_link' => $customer->getValidationLink(),
             ]);
 }
