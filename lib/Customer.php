@@ -511,7 +511,6 @@ class Customer
      **/
     private function loadCustomerData()
     {
-        $this->eraseCustomerData();
         $id = $this->id;
 
         if (empty($id)) {
@@ -602,14 +601,8 @@ class Customer
      **/
     public function getStores()
     {
-        /// stub
-        $result = [];
-
-        $store = new Store(1);
-        $result [] = $store;
-        $store = new Store(2);
-        $result [] = $store;
-     
-        return $result;
+        // !!! stub  
+        return [new Store(1), new Store(2)];
+        //return [];
     }
 }
