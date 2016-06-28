@@ -601,8 +601,16 @@ class Customer
      **/
     public function getStores()
     {
-        // !!! stub  
-        return [new Store(1), new Store(2)];
-        //return [];
+        $query = "SELECT `id` FROM `stores` WHERE `owner` = ".$this->getId();
+        _QExec($query, true);
+        $res_assoc = _QAssoc();
+
+        $stores = [];
+
+        foreach ($res_assoc as $key => $value) {
+            $stores [] = new Store($this, $value['id']);
+        }
+
+        return $stores;
     }
 }
