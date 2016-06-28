@@ -30,7 +30,7 @@
           <div class="form-group {{ store.hasError('url') ? 'has-error' : '' }}">
             <label for="inputUrl" class="col-sm-2 control-label">Store url</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" id="inputUrl " placeholder="Store url" name="store[url]" maxlenght="60" value="{{ store.url }}">
+              <input type="text" class="form-control" id="inputUrl " placeholder="Store url without http://" name="store[url]" maxlenght="60" value="{{ store.url }}">
               {% if store.hasError('url') %}
                 <span id="helpBlock" class="help-block">{{ store.errorString('url') }}</span>
               {% endif %}
