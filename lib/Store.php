@@ -4,6 +4,13 @@ namespace App;
 
 class Store
 {
+    const STORE_REQUIRED_FIELD = 'This is a required field.';
+    const STORE_NAME_MALFORMED = 'Name contains deprecated characters. Allowed only alpha characters.';
+    const STORE_EMAIL_NOT_VALID = 'Please, enter valid Email';
+    const STORE_URL_NOT_VALID = 'Please, enter valid URL';
+    const STORE_ALREADY_ADDED = 'This store is already added to your account';
+    const STORE_EXISTS = 'This store is already added to other account';
+    const STORE_WAITING_VALIDATION = 'added';
     const STORE_ACTIVE = 'active';
 
     /**
@@ -28,13 +35,6 @@ class Store
     private $status;
 
     /**
-     * Owner's id (from the db)
-     *
-     * @var int
-     **/
-    private $owner;
-
-    /**
      * Url
      *
      * @var int
@@ -47,6 +47,23 @@ class Store
      * @var App\Customer
      **/
     private $customer;
+
+
+    /**
+     * Errors
+     *
+     * @var array
+     **/
+    private $errors;
+
+
+    /**
+     * Email
+     *
+     * @var array
+     **/
+    private $email;
+
 
 
     public function __construct($customer = null, $id = null)
@@ -143,17 +160,6 @@ class Store
     }
 
     /**
-     * Return wner's id
-     *
-     * @return int
-     * @author Michael Strohyi
-     **/
-    public function getOwner()
-    {
-        return $this->owner;
-    }
-
-    /**
      * Load data for store from db
      *
      * @return void
@@ -204,5 +210,203 @@ class Store
     {
         $name =  $this->name;
         return !empty($name);
+    }
+
+     /**
+     * Return true if current name has a valid form and not empty
+     *
+     * @return void
+     * @author Michael Strohyi
+     **/
+    private function validateName()
+    {
+        unset($this->errors['name']);
+
+        # check if name is not empty
+        $name = $this->getName();
+        if (empty($name)) {
+            $this->errors['name'] = self::STORE_REQUIRED_FIELD;
+            return;
+        }
+
+        # check if a name has only allowed characters (alpha only)
+        if (!preg_match('#^[a-z]+(\s[a-z]+)?$#i', $name)) {
+            $this->errors['name'] = self::STORE_NAME_MALFORMED;
+            return;
+        }
+    }
+
+    /**
+     * Return email
+     *
+     * @return string
+     * @author Michael Strohyi
+     **/
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Set email
+     *
+     * @param  string  $email
+     * @return self
+     * @author Michael Strohyi
+     **/
+    public function setEmail($email)
+    {
+        # remove trailing spaces
+        $email = $this->prepareEmail($email);
+
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Prepare given $email to use in Store
+     *
+     * @param string $email
+     * @return string
+     * @author Michael Strohyi
+     **/
+    static private function prepareEmail($email)
+    {
+        return strtolower(trim($email));
+    }
+
+    /**
+     * Return true if current email has a valid form and not empty
+     *
+     * @return void
+     * @author Michael Strohyi
+     **/
+    private function validateEmail()
+    {
+        unset($this->errors['email']);
+        $email = $this->getEmail();
+
+        if (empty($email)) {
+            $this->errors['email'] = self::STORE_REQUIRED_FIELD;
+            return;
+        }
+
+        # check if an email has a valid form
+        if (!isEmailValid($email)) {
+            $this->errors['email'] = self::STORE_EMAIL_NOT_VALID;
+            return;
+        }
+    }
+
+    /**
+     * Return true if current url has a valid form and not empty
+     *
+     * @return void
+     * @author Michael Strohyi
+     **/
+    private function validateUrl()
+    {
+        unset($this->errors['url']);
+
+        # check if url is not empty
+        $url = $this->getUrl();
+        if (empty($url)) {
+            $this->errors['url'] = self::STORE_REQUIRED_FIELD;
+            return;
+        }
+
+        # check if an url has a valid form
+        if (!isUrlValid($url)) {
+            $this->errors['url'] = self::STORE_URL_NOT_VALID;
+            return;
+        }
+    }
+
+    /**
+     * Return store information gathered from the given $info. 
+     * Keep non-existing fields empty.
+     *
+     * @param  array $info
+     * @return self
+     * @author Michael Strohyi
+     **/
+    public function fetchInfo($info)
+    {
+        if (!empty($info['name'])) {
+            $this->setName($info['name']);
+        }
+
+        if (!empty($info['email'])) {
+            $this->setEmail($info['email']);
+        }
+        
+        if (!empty($info['url'])) {
+            $this->setUrl($info['url']);
+        }
+                
+        return $this;
+    }
+
+    /**
+     * Return true if all fields has valid data, false otherwise.
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function isValid()
+    {
+        return empty($this->errors);
+    }
+
+    /**
+     * Return error string for given field $name
+     *
+     * @param string $name
+     * @return string
+     * @author Michael Strohyi
+     **/
+    public function getErrorString($name)
+    {
+        return $this->hasError($name) ? $this->errors[$name] : '';
+    }
+
+    /**
+     * Return true if field with $name has error
+     *
+     * @param string $name
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function hasError($name)
+    {
+        return isset($this->errors[$name]);
+    }
+
+    /**
+     * Validate user-submitted data.
+     *
+     * @return self
+     * @author Michael Strohyi
+     **/
+    public function validate()
+    {
+        $this->validateName();
+        $this->validateEmail();
+        $this->validateUrl();
+
+        return $this;
+    }
+
+    /**
+     * Save store's registration data into db and return true. If error happens return false.
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function save()
+    {
+        /// !!! stub
+        return true;
     }
 }
