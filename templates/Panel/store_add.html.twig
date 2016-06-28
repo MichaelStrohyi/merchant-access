@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add new store{% endblock %}
+
+{% block body %}
+    <div class="container">
+      <div id="registration-form">
+        <header align="center">
+          <h1>Store registration form</h1>
+        </header>
+        <form class="form-horizontal" method="post" name="registration_form">
+          <div class="form-group {{ store.hasError('name') ? 'has-error' : '' }}">
+            <label for="inputName" class="col-sm-2 control-label">Store name</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputName " placeholder="Store name" name="store[name]" maxlenght="40" value="{{ store.name }}">
+              {% if store.hasError('name') %}
+                <span id="helpBlock" class="help-block">{{ cstore.errorString('name') }}</span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="form-group {{ store.hasError('email') ? 'has-error' : '' }}">
+            <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+            <div class="col-sm-10">
+              <input type="email" class="form-control" id="inputEmail" placeholder="Email" name="store[email]" maxlenght="60" value="{{ store.email }}">
+              {% if store.hasError('email') %}
+                <span id="helpBlock" class="help-block">{{ store.errorString('email') }}</span>
+              {% endif %}
+            </div>
+          </div> 
+          <div class="form-group {{ store.hasError('url') ? 'has-error' : '' }}">
+            <label for="inputUrl" class="col-sm-2 control-label">Store url</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputUrl " placeholder="Store url" name="store[url]" maxlenght="60" value="{{ store.url }}">
+              {% if store.hasError('url') %}
+                <span id="helpBlock" class="help-block">{{ store.errorString('url') }}</span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-default" name="buttonSubmit">Register</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+{% endblock %}
