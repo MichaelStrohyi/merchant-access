@@ -3,11 +3,11 @@
 require_once __DIR__  . '/../../include/core.php';
 
 $store_id = filter_input(INPUT_GET, 'store');
-$store = new App\Store($store_id);
-
 $customer = getLoggedCustomer();
 
-if ($customer->getId() != $store->getOwner()) {
+$store = new App\Store($customer, $store_id);
+
+if (!$store->exists()) {
     echo "You have no permission to work with this store";
     exit;
 }

@@ -41,9 +41,18 @@ class Store
      **/
     private $url;
 
-    public function __construct($id = null)
+    /**
+     * Customer
+     *
+     * @var App\Customer
+     **/
+    private $customer;
+
+
+    public function __construct($customer = null, $id = null)
     {
         $this->id = $id;
+        $this->customer = $customer;
 
         $this->loadStoreData();
     }
@@ -145,35 +154,21 @@ class Store
     }
 
     /**
-     * Set Owner to $owner
-     *
-     * @param int $owner
-     * @return self
-     * @author Michael Strohyi
-     **/
-    public function setOwner($owner)
-    {
-        $this->owner = $owner;
-        
-        return $this;
-    }
-
-    /**
-     * Load data for store with given $id from db
+     * Load data for store from db
      *
      * @return void
      * @author Michael Strohyi
      **/
     private function loadStoreData()
     {
-        $this->eraseStoreData();
         $id = $this->id;
+        $owner = $this->customer->getId();
 
-        if (empty($id)) {
+        if (empty($id) || empty($owner)) {
             return;
         }
 
-        $query = "SELECT * FROM `stores` WHERE `id` = $id";
+        $query = "SELECT * FROM `stores` WHERE `id` = $id AND `owner` = $owner";
         _QExec($query);
         $res_element = _QElem();
 
@@ -185,23 +180,7 @@ class Store
         $this->setName($res_element['name']);
         $this->setUrl($res_element['url']);
         $this->setStatus($res_element['status']);
-        $this->setOwner($res_element['owner']);
 
-        return;
-    }
-
-    /**
-     * Unset all vars for Store
-     *
-     * @return void
-     * @author Michael Strohyi
-     **/
-    private function eraseStoreData()
-    {
-        $this->name = null;
-        $this->owner = null;
-        $this->status = null;
-        $this->url = null;
     }
 
     /**
@@ -213,5 +192,17 @@ class Store
     public function isActive()
     {
         return $this->getStatus() == self::STORE_ACTIVE;
+    }
+
+    /**
+     * Return true if store exists ($this is not empty)
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function exists()
+    {
+        $name =  $this->name;
+        return !empty($name);
     }
 }
