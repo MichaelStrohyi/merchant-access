@@ -33,3 +33,15 @@ function getEmailMessage($template, $customer)
             'validation_link' => getPath('validation', ['customer' => $customer]),
             ]);
 }
+
+/**
+ * Send the confirmation link to customer's email
+ *
+ * @param App\Customer $customer
+ * @return void
+ * @author Michael Strohyi
+ **/
+function storeEmailConfirmation($store)
+{
+   // !!! stub
+}

@@ -88,3 +88,16 @@ function clearLoggedCustomer()
 {
   session_unset();
 }
+
+/**
+ * Return true if given $url has a valid form.
+ *
+ * @param  string  $url
+ * @return boolean
+ * @author Michael Strohyi
+ **/
+function isUrlValid($url)
+{
+  // !!! stub
+  return true;
+}
