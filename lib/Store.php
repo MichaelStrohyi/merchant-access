@@ -452,7 +452,7 @@ class Store
         if (strpos($url_domain, 'www.') === 0) {
             $url_domain = substr($url_domain, 4);
         }
-        
+
         return $email_domain == $url_domain;
     }
 
@@ -509,4 +509,17 @@ class Store
     {
         return md5($this->getEmail() . $this->getId());
     }
+
+     /**
+     * Return true if store is added into db, but not validated yet.
+     * Otherwise return false.
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function isWaitingValidation()
+    {
+        return $this->getStatus() == self::STORE_WAITING_VALIDATION;
+    }
+
 }
