@@ -62,8 +62,8 @@ function getTwig()
  **/
 function getLoggedCustomer()
 {
-  $customer_id = empty($_SESSION['customer_id']) ? null : $_SESSION['customer_id'];
-  return new App\Customer($customer_id);
+    $customer_id = empty($_SESSION['customer_id']) ? null : $_SESSION['customer_id'];
+    return new App\Customer($customer_id);
 }
 
 /**
@@ -75,7 +75,7 @@ function getLoggedCustomer()
  **/
 function setLoggedCustomer($customer)
 {
-  $_SESSION['customer_id'] = $customer->getId();
+    $_SESSION['customer_id'] = $customer->getId();
 }
 
 /**
@@ -86,7 +86,7 @@ function setLoggedCustomer($customer)
  **/
 function clearLoggedCustomer()
 {
-  session_unset();
+    session_unset();
 }
 
 /**
@@ -98,6 +98,9 @@ function clearLoggedCustomer()
  **/
 function isUrlValid($url)
 {
-  // !!! stub
-  return true;
+    if (filter_var($url, FILTER_VALIDATE_URL) !== false && strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0) {
+      return true;
+    }
+
+    return false;
 }
