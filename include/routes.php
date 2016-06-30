@@ -27,9 +27,24 @@ function getPath($route_name, $params = [])
             $customer = $params['customer'];
             $location = '/accounts/verify.php?id=' . $customer->getId() . '&hash=' . $customer->getHash();
             break;
+
         case 'store_verification':
             $store = $params['store'];
             $location = '/accounts/verify.php?store=' . $store->getId() . '&hash=' . $store->getHash();
+            break;
+
+        case 'store_rm_verification':
+            $store = $params['store'];
+            $location = '/accounts/verify.php?store=' . $store->getId() . '&action=rm&hash=' . $store->getHash();
+            break;
+
+        case 'stores':
+            $location = '/accounts/stores.php';
+            break;
+
+        case 'resend_verification':
+            $store = $params['store'];
+            $location = '/accounts/send_store_verification.php?store=' . $store->getId();
             break;
 
         default:
