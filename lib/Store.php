@@ -8,7 +8,7 @@ class Store
     const STORE_NAME_MALFORMED = 'Name contains deprecated characters. Allowed only alpha characters.';
     const STORE_EMAIL_NOT_VALID = 'Please, enter valid Email';
     const STORE_EMAIL_WRONG_DOMAIN = "To add store you MUST use email on the store's domain";
-    const STORE_URL_NOT_VALID = 'Please, enter valid URL';
+    const STORE_URL_NOT_VALID = 'Please, enter valid URL (with http:// or https://)';
     const STORE_ALREADY_ADDED = "This store is already added somebody's account";
     const STORE_EXISTS = 'This store is already added to other account';
     const STORE_WAITING_VALIDATION = 'added';
@@ -446,8 +446,14 @@ class Store
      **/
     private function EmailMatchDomain()
     {
-        $email_domain = substr($this->getEmail(), strpos($this->getEmail(), '@')+1);
-        return strpos($this->getUrl(), $email_domain) == strlen($this->getUrl())-strlen($email_domain);
+        $email_domain = parse_url("http://" . $this->getEmail(), PHP_URL_HOST);
+        $url_domain = parse_url($this->getUrl(), PHP_URL_HOST);
+
+        if (strpos($url_domain, 'www.') === 0) {
+            $url_domain = substr($url_domain, 4);
+        }
+        
+        return $email_domain == $url_domain;
     }
 
     /**
@@ -459,8 +465,7 @@ class Store
      **/
     private function prepareUrl($url)
     {
-        $replace = ['http://', 'http:/', 'http//', 'http/','https://', 'https:/', 'https//', 'https/'];
-        $url = str_replace($replace, '', strtolower(trim($url)));
+        $url = strtolower(trim($url));
         return $url;
     }
 
