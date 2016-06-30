@@ -30,7 +30,7 @@ if (isset($_POST['buttonSubmit'])) {
         }
 
         # send email to confirm registration
-        EmailConfirmation('account_verification', ['customer' => $customer]);
+        emailConfirmation('account_verification', ['customer' => $customer]);
         
         # display success registration page
         echo $twig->render('Signup/success-registration.html.twig', [
