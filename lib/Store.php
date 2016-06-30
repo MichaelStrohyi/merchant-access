@@ -69,10 +69,9 @@ class Store
 
     public function __construct($customer = null, $id = null)
     {
-        $this->id = $id;
         $this->customer = $customer;
 
-        $this->loadStoreData();
+        $this->loadStoreData($id);
     }
 
     /**
@@ -166,9 +165,8 @@ class Store
      * @return void
      * @author Michael Strohyi
      **/
-    private function loadStoreData()
+    private function loadStoreData($id)
     {
-        $id = $this->id;
         $owner = $this->customer->getId();
 
         if (empty($id) || empty($owner)) {
@@ -184,6 +182,7 @@ class Store
             return;
         }
 
+        $this->id = $id;
         $this->setName($res_element['name']);
         $this->setUrl($res_element['url']);
         $this->setStatus($res_element['status']);
@@ -209,8 +208,8 @@ class Store
      **/
     public function exists()
     {
-        $name =  $this->name;
-        return !empty($name);
+        $id =  $this->id;
+        return !empty($id);
     }
 
      /**
