@@ -25,7 +25,9 @@ if (!defined('LOGIN_CHECK') || LOGIN_CHECK == true) {
     if (!$customer->exists()){
         redirectToPage('login');
     } elseif (!$customer->isActive()) {
-        echo $twig->render('Panel/customer-not-active.html.twig');
+        echo $twig->render('Panel/customer-not-active.html.twig', [
+        'url' => getPath('login')
+        ]);
         exit;
     }
 }
