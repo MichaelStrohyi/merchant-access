@@ -30,12 +30,12 @@ function getPath($route_name, $params = [])
 
         case 'store_verification':
             $store = $params['store'];
-            $location = '/accounts/verify.php?store=' . $store->getId() . '&hash=' . $store->getHash();
+            $location = '/accounts/store_verify.php?store=' . $store->getId() . '&action=add&' . '&id=' . $store->getCustomer()->getId() . '&hash=' . $store->getHash();
             break;
 
         case 'store_rm_verification':
             $store = $params['store'];
-            $location = '/accounts/verify.php?store=' . $store->getId() . '&action=rm&hash=' . $store->getHash();
+            $location = '/accounts/store_verify.php?store=' . $store->getId() . '&action=rm&' . '&id=' . $store->getCustomer()->getId() . '&hash=' . $store->getHash();
             break;
 
         case 'stores':
@@ -44,7 +44,16 @@ function getPath($route_name, $params = [])
 
         case 'resend_verification':
             $store = $params['store'];
-            $location = '/accounts/send_store_verification.php?store=' . $store->getId();
+            $location = '/accounts/send_store_verification.php?store=' . $store->getId() . '&action=add';
+            break;
+
+        case 'resend_rm_verification':
+            $store = $params['store'];
+            $location = '/accounts/send_store_verification.php?store=' . $store->getId() . '&action=rm';
+            break;
+
+        case 'login':
+            $location = '/accounts/login.php';
             break;
 
         default:
