@@ -16,24 +16,19 @@ $customer = getLoggedCustomer();
 
 $store = new App\Store($customer, $store_id);
 
-if (!$store->exists()) {
-    echo $twig->render('Panel/store-access-denied.html.twig', [
-        'message' => 'You have no permission to work with this store',
-        'url' => getPath('stores'),
-        ]);
-    exit;
-}
-
-if (!$store->isActive()) {    
-    echo $twig->render('Panel/store-access-denied.html.twig', [
-        'message' => 'You have not validated this store ownership yet. Please, validate it or <a href="' . getPath('resend_verification', ['store' => $store]) . '">click here</a> to request new validation email',
-        'url' => getPath('stores'),
-        ]);
+if (!customerCanWork($store)) {
     exit;
 }
 
 if (isset($button_submit)) {
-    $store_name = $store->getName();
+
+    if (!$store->deleteStore()) {
+            # show db access error page
+             echo $twig->render('Signup/db-access-error.html.twig', [
+                'message' => 'Some arror happens. Please, try again later.'
+                ]);
+            exit;
+        }
 
     emailConfirmation('store_rm_verification', ['store' => $store]);
 
