@@ -25,6 +25,11 @@ function emailConfirmation($template, $params = [])
             $message = getEmailMessage($template, $params);
             break;
         
+        case 'resend_rm_verification':
+            $subject = 'Verify store ' . $params['store']->getName() . ' removing';
+            $message = getEmailMessage($template, $params);
+            break;
+        
         default:
             $subject = '';
             $message = '';
@@ -64,6 +69,14 @@ function getEmailMessage($template, $params = [])
             break;
 
         case 'store_rm_verification':
+            $template_params = [
+                'store' => $params['store'],
+                'server' => SIGNUP_SERVER,
+                'validation_link' => getPath($template, ['store' => $params['store']]),
+                ];
+            break;
+
+        case 'resend_rm_verification':
             $template_params = [
                 'store' => $params['store'],
                 'server' => SIGNUP_SERVER,
