@@ -12,6 +12,7 @@ class Store
     const STORE_ALREADY_ADDED = "This store is already added somebody's account";
     const STORE_EXISTS = 'This store is already added to other account';
     const STORE_WAITING_VALIDATION = 'added';
+    const STORE_WAITING_REMOVING = 'deleted';
     const STORE_ACTIVE = 'active';
 
     /**
@@ -167,7 +168,7 @@ class Store
      **/
     private function loadStoreData($id)
     {
-        $owner = $this->customer->getId();
+        $owner = $this->getCustomer()->getId();
 
         if (empty($id) || empty($owner)) {
             return;
@@ -186,6 +187,7 @@ class Store
         $this->setName($res_element['name']);
         $this->setUrl($res_element['url']);
         $this->setStatus($res_element['status']);
+        $this->setEmail($res_element['email']);
 
     }
 
@@ -522,4 +524,80 @@ class Store
         return $this->getStatus() == self::STORE_WAITING_VALIDATION;
     }
 
+    /**
+     * Return Customer
+     *
+     * @return App\Customer
+     * @author Michael Strohyi
+     **/
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+
+    /**
+     * Return true if hash is valid for this $customer, otherwise return false
+     *
+     * @param string $hash
+     * @return boolenan
+     * @author Michael Strohyi
+     **/
+    public function isHashValid($hash)
+    {
+        return $hash == $this->getHash();
+    }
+
+    /**
+     * Return true if store is added into db, but not validated yet.
+     * Otherwise return false.
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function isWaitingRemoving()
+    {
+        return $this->getStatus() == self::STORE_WAITING_REMOVING;
+    }
+
+    /**
+     * Return true if store is waiting removing validation.
+     * Otherwise return false.
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function deleteFromList()
+    {
+        $query = "DELETE FROM `stores` WHERE `id` = " . $this->getId();
+
+        return  _QExec($query) != false;
+    }
+
+    /**
+     * Set 'active' status for store and return true.
+     * Return false if some error happens.
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function activateStore()
+    {
+        $query = "UPDATE `stores` SET `status` = '".self::STORE_ACTIVE."' WHERE `id` = " . $this->getId();
+
+        return  _QExec($query) != false;
+    }
+
+    /**
+     * Set 'deleted' status for store and return true.
+     * Return false if some error happens.
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function deleteStore()
+    {
+        $query = "UPDATE `stores` SET `status` = '".self::STORE_WAITING_REMOVING."' WHERE `id` = " . $this->getId();
+
+        return  _QExec($query) != false;
+    }
 }
