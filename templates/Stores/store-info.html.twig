@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Store {{ store.name }} {% endblock %}
+
+{% block body %}
+    <div class="container">
+      <div id="store-form">
+        <header align="center">
+          <h3>Store {{ store.name }} info</h3>
+        </header>
+        <form class="form-horizontal" method="post" name="store_form">
+          <div class="form-group">
+            <label for="inputName" class="col-sm-2 control-label">Name</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputName" name="store[name]" value="{{ store.name }}" readonly>
+              <input type="hidden" class="form-control" id="inputId" name="store[id]" value="{{ store.id }}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputUrl" class="col-sm-2 control-label">Url</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputUrl" name="store[url]" value="{{ store.url }}" readonly>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="imageLogo" class="col-sm-2 control-label">Logo</label>
+            <div class="col-sm-10">
+              {% if store.logo is not empty %}
+                <img src="image.php?id={{ store.logo }}">
+              {% else %}
+                Store has no logo
+              {% endif %}
+            </div>
+          </div> 
+          <div class="form-group">
+            <label for="inputLogo" class="col-sm-2 control-label">New logo</label>            
+            <div class="col-sm-10">
+              <input type="file" class="form-control" id="inputLogo" placeholder="Choose new logo if you need" name="store[new_logo]">
+            </div>
+          </div> 
+          <div class="form-group">
+            <label for="inputKeywords" class="col-sm-2 control-label">Store keywords</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" id="textareaKeywords" placeholder="Type keywords for your store" name="store[keywords]" rows="5">{{ store.keywords }}</textarea>
+            </div>
+          </div> 
+          <div class="form-group">
+            <label for="inputDescription" class="col-sm-2 control-label">Store description</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" id="textareaDescription" placeholder="Type description for your store" name="store[description]" rows="5">{{ store.description }}</textarea>
+            </div>
+          </div> 
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-default" name="store[buttonSave]">Save</button>
+              <button type="submit" class="btn btn-default" name="store[buttonCancel]">Cancel</button>              
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  {% if message == 'saved' %}
+  <script> alert('Store {{ store.name }} updated successfully')</script>
+  {% endif %}
+{% endblock %}
