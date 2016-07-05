@@ -50,7 +50,6 @@ class Store
      **/
     private $customer;
 
-
     /**
      * Errors
      *
@@ -58,14 +57,33 @@ class Store
      **/
     private $errors;
 
-
     /**
      * Email
      *
-     * @var array
+     * @var string
      **/
     private $email;
 
+    /**
+     * Keywords
+     *
+     * @var string
+     **/
+    private $keywords;
+
+    /**
+     * Description
+     *
+     * @var string
+     **/
+    private $description;
+
+    /**
+     *  !!! stub var logo
+     *
+     * @var string
+     **/
+    private $logo;
 
 
     public function __construct($customer = null, $id = null)
@@ -150,6 +168,7 @@ class Store
     /**
      * Set URL to $url
      *
+     * @param string $url
      * @return self
      * @author Michael Strohyi
      **/
@@ -158,6 +177,66 @@ class Store
         $url = $this->prepareUrl($url);
         $this->url = $url;
         return $this;
+    }
+
+
+    /**
+     * Return Description
+     *
+     * @return string
+     * @author Michael Strohyi
+     **/
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set Description to $description
+     *
+     * @param string $description
+     * @return self
+     * @author Michael Strohyi
+     **/
+    public function setDescription($description)
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * Return Keywords
+     *
+     * @return string
+     * @author Michael Strohyi
+     **/
+    public function getKeywords()
+    {
+        return $this->keywords;
+    }
+
+    /**
+     * Set Keywords to $keywords
+     *
+     * @param string $keywords
+     * @return self
+     * @author Michael Strohyi
+     **/
+    public function setKeywords($keywords)
+    {
+        $this->keywords = $keywords;
+        return $this;
+    }
+
+    /**
+     * // !!! stub function, Return Logo
+     *
+     * @return string
+     * @author Michael Strohyi
+     **/
+    public function getLogo()
+    {
+        return $this->logo;
     }
 
     /**
@@ -188,6 +267,11 @@ class Store
         $this->setUrl($res_element['url']);
         $this->setStatus($res_element['status']);
         $this->setEmail($res_element['email']);
+        $this->setKeywords($res_element['keywords']);
+        $this->setDescription($res_element['description']);
+        // !!! mockup
+        $this->logo = '1';
+        // !!! end mockup
 
     }
 
@@ -357,7 +441,15 @@ class Store
         if (!empty($info['url'])) {
             $this->setUrl($info['url']);
         }
-                
+        
+        if (!empty($info['description'])) {
+            $this->setDescription($info['description']);
+        }
+
+        if (!empty($info['keywords'])) {
+            $this->setKeywords($info['keywords']);
+        }
+                     
         return $this;
     }
 
@@ -419,23 +511,36 @@ class Store
      **/
     public function save()
     {
-        $new_store = [
-            'name' => $this->getName(),
-            'email' => $this->getEmail(),
-            'url' => $this->getUrl(),
-            'status' => self::STORE_WAITING_VALIDATION,
-            'reg_date' => date("Y-m-d H:i:s"),
-            'owner' => $this->customer->getId(),
-        ];
-        $query = "INSERT INTO `stores` "._QInsert($new_store);
+        // !!! mockup
+        $new_id = false;
+
+        if ($this->exists()) {
+            $store_data = [
+                'keywords' => $this->prepareTextForDb($this->getKeywords()),
+                'description' => $this->prepareTextForDb($this->getDescription()),
+                ];
+            $query = "UPDATE `stores` SET " . _QUpdate($store_data) . " WHERE `id` = " . $this->getId();
+        } else {
+            $store_data = ['name' => $this->getName(),
+                'email' => $this->getEmail(),
+                'url' => $this->getUrl(),
+                'status' => self::STORE_WAITING_VALIDATION,
+                'owner' => $this->getCustomer()->getId(),
+                'reg_date' => date("Y-m-d H:i:s"),
+                ];
+            $query = "INSERT INTO `stores` " . _QInsert($store_data);
+            $new_id = true;
+        }
+
         $res = _QExec($query);
 
         if ($res === false) {
-            $this->id = null;
-            $this->eraseStoreData();
             return false;
         }
-        $this->id = _QID();
+
+        if ($new_id) {
+            $this->id = _QID();
+        }
 
         return true;
     }
@@ -599,5 +704,16 @@ class Store
         $query = "UPDATE `stores` SET `status` = '".self::STORE_WAITING_REMOVING."' WHERE `id` = " . $this->getId();
 
         return  _QExec($query) != false;
+    }
+
+    /**
+     * Convert text from $text to form can be inserted in db
+     *
+     * @return string
+     * @author Michael Strohyi
+     **/
+    private function prepareTextForDb($text)
+    {
+        return strip_tags($text);
     }
 }
