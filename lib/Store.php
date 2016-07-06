@@ -79,11 +79,11 @@ class Store
     private $description;
 
     /**
-     *  !!! stub var logo
+     * array of App\StoreLogo related to store
      *
-     * @var string
+     * @var array
      **/
-    private $logo;
+    private $logos;
 
 
     public function __construct($customer = null, $id = null)
@@ -229,17 +229,6 @@ class Store
     }
 
     /**
-     * // !!! stub function, Return Logo
-     *
-     * @return string
-     * @author Michael Strohyi
-     **/
-    public function getLogo()
-    {
-        return $this->logo;
-    }
-
-    /**
      * Load data for store from db
      *
      * @return void
@@ -269,10 +258,7 @@ class Store
         $this->setEmail($res_element['email']);
         $this->setKeywords($res_element['keywords']);
         $this->setDescription($res_element['description']);
-        // !!! mockup
-        $this->logo = '1';
-        // !!! end mockup
-
+        $this->setLogos($this->getLogosList());
     }
 
     /**
@@ -511,7 +497,7 @@ class Store
      **/
     public function save()
     {
-        // !!! mockup
+        // !!! mockup, needed code to save logo
         $new_id = false;
 
         if ($this->exists()) {
@@ -715,5 +701,75 @@ class Store
     private function prepareTextForDb($text)
     {
         return strip_tags($text);
+    }
+
+    /**
+     * Return first logo from $logos array if it is not empty.
+     * Otherwise return empty array.
+     *
+     * @return array
+     * @author Michael Strohyi
+     **/
+    public function getPrimaryLogo()
+    {
+        $logos = $this->getLogos();
+        if (empty($logos)) {
+            return [];
+        }
+       
+        return $logos[0];
+    }
+
+    /**
+     * Return logos
+     *
+     * @return array
+     * @author Michael Strohyi
+     **/
+    public function getLogos()
+    {
+        return $this->logos;
+    }
+
+    /**
+     * Set logos to given $logos
+     *
+     * @param array $logos
+     * @return self
+     * @author Michael Strohyi
+     **/
+    public function setLogos($logos)
+    {
+        $this->logos = $logos;      
+    }
+
+    /**
+     * Get list of logos for current store from db and return array of StoreLogo objects 
+     *
+     * @return array
+     * @author Michael Strohyi
+     **/
+    public function getLogosList()
+    {
+        $id = $this->getId();
+
+        if (empty($id)) {
+            return;
+        }
+
+        $query = "SELECT * FROM `store_logos` WHERE `store_id` = $id";
+        _QExec($query);
+        $res_assoc = _QAssoc();
+        $logos_array = [];
+
+        foreach ($res_assoc as $key => $value) {
+            $logo = new StoreLogo($id, $value['logo_id']);
+
+            if ($logo->exists()) {
+                $logos_array [] = $logo;
+            }
+        }
+
+        return $logos_array;
     }
 }
