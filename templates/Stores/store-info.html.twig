@@ -8,7 +8,7 @@
         <header align="center">
           <h3>Store {{ store.name }} info</h3>
         </header>
-        <form class="form-horizontal" method="post" name="store_form">
+        <form class="form-horizontal" method="post" name="store_form" enctype="multipart/form-data">
           <div class="form-group">
             <label for="inputName" class="col-sm-2 control-label">Name</label>
             <div class="col-sm-10">
@@ -25,8 +25,8 @@
           <div class="form-group">
             <label for="imageLogo" class="col-sm-2 control-label">Logo</label>
             <div class="col-sm-10">
-              {% if store.logo is not empty %}
-                <img src="image.php?id={{ store.logo }}">
+              {% if store.primaryLogo is not empty %}
+                <img src="image.php?id={{ store.primaryLogo.id }}">
               {% else %}
                 Store has no logo
               {% endif %}
@@ -35,7 +35,11 @@
           <div class="form-group">
             <label for="inputLogo" class="col-sm-2 control-label">New logo</label>            
             <div class="col-sm-10">
-              <input type="file" class="form-control" id="inputLogo" placeholder="Choose new logo if you need" name="store[new_logo]">
+              <input type="file" class="form-control" id="inputLogo" placeholder="Choose new logo if you need" name="new_logo"
+              {% if store.primaryLogo.acceptFilter is not empty %} 
+              accept="{{ store.primaryLogo.acceptFilter }}"
+              {% endif %}
+              >
             </div>
           </div> 
           <div class="form-group">
