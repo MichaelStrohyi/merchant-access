@@ -111,8 +111,10 @@ class Customer
         # remove extra/trailing spaces
         $name = trim(preg_replace('#\s+#', ' ', $name));
 
-        $this->name = $name;
-        $this->isModified = true;
+        if ($this->name != $name) {
+            $this->name = $name;
+            $this->isModified = true;
+        }
 
         return $this;
     }
@@ -164,8 +166,10 @@ class Customer
         # remove trailing spaces
         $email = $this->prepareEmail($email);
 
-        $this->email = $email;
-        $this->isModified = true;
+        if ($this->email != $email) {
+            $this->email = $email;
+            $this->isModified = true;
+        }
 
         return $this;
     }
@@ -242,8 +246,12 @@ class Customer
     public function setPassword($password)
     {
         if (!empty($password)) {
-            $this->password = $this->encryptPassword($password);
-            $this->isModified = true;
+            $password = $this->encryptPassword($password);
+
+            if ($this->password != $password) {
+                $this->password = $password;
+                $this->isModified = true;
+            }
         }
 
         return $this;
@@ -271,8 +279,12 @@ class Customer
     public function setConfirmPassword($password)
     {
         if (!empty($password)) {
-            $this->password_confirm = $this->encryptPassword($password);
-            $this->isModified = true;
+            $password_confirm = $this->encryptPassword($password);
+            
+            if ($this->password_confirm != $password_confirm) {
+                $this->password_confirm = $password_confirm;
+                $this->isModified = true;
+            }
         }
         
         return $this;
@@ -397,8 +409,10 @@ class Customer
             $this->id = null;
             return false;
         }
-        
+
         $this->id = _QID();
+        $this->isModified = false;
+        
         return true;
     }
 
@@ -513,8 +527,10 @@ class Customer
      **/
     public function setStatus($status)
     {
-        $this->status = $status;
-        $this->isModified = true;
+        if ($this->status != $status) {
+            $this->status = $status;
+            $this->isModified = true;
+        }
 
         return $this;
     }
