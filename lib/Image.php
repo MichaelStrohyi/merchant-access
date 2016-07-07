@@ -96,10 +96,12 @@ class Image
      **/
     public function setWidth($width)
     {
-        $this->width = $width;
-        $this->isModified = true;
+        if ($this->width != $width) {
+            $this->width = $width;
+            $this->isModified = true;
+        }
 
-        return self;
+        return $this;
     }
 
     /**
@@ -122,10 +124,12 @@ class Image
      **/
     public function setHeight($height)
     {
-        $this->height = $height;
-        $this->isModified = true;
+        if ($this->height != $height) {
+            $this->height = $height;
+            $this->isModified = true;
+        }
 
-        return self;
+        return $this;
     }
 
     /**
@@ -148,10 +152,12 @@ class Image
      **/
     public function setMime($mime)
     {
-        $this->mime = $mime;
-        $this->isModified = true;
+        if ($this->mime != $mime) {
+            $this->mime = $mime;
+            $this->isModified = true;
+        }
 
-        return self;
+        return $this;
     }
 
     /**
@@ -174,8 +180,12 @@ class Image
      **/
     public function setSize($size)
     {
-        $this->size = $size;
-        $this->isModified = true;
+        if ($this->size != $size) {
+            $this->size = $size;
+            $this->isModified = true;
+        }
+
+        return $this;
     }
 
     /**
@@ -198,8 +208,10 @@ class Image
      **/
     public function setType($type)
     {
-        $this->type = $type;
-        $this->isModified = true;
+        if ($this->type != $type) {
+            $this->type = $type;
+            $this->isModified = true;
+        }
 
         return $this;
     }
@@ -224,8 +236,10 @@ class Image
      **/
     public function setName($name)
     {
-        $this->name = $name;
-        $this->isModified = true;
+        if ($this->name != $name) {
+            $this->name = $name;
+            $this->isModified = true;
+        }
 
         return $this;
     }
@@ -250,8 +264,10 @@ class Image
      **/
     public function setContent($content)
     {
-        $this->picture = $picture;
-        $this->isModified = true;
+        if ($this->content != $content) {
+            $this->content= $content;
+            $this->isModified = true;
+        }
 
         return $this;
     }
