@@ -39,10 +39,13 @@ if (isset($form_data['buttonSave']))
     # grab data from $form_data to $store vars
     $store->fetchInfo($form_data);
 
-    # if new logo is set do steps to save it to db
-    #.....
-    #.....
-    #.....
+    # if new logo is set
+    if (!empty($_FILES['new_logo']['name']) && $_FILES['new_logo']['error'] == 0) {
+        # need to load new logo ad save it into db
+        # ....
+        # ....
+        # ....
+    }
 
     # save $store to db
     $store->save();
@@ -54,4 +57,5 @@ if (isset($form_data['buttonSave']))
 echo $twig->render('Stores/store-info.html.twig', [
     'store' => $store,
     'message' => $message,
+    'logo_filter' => App\StoreLogo::getAcceptFilter(),
     ]);

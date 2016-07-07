@@ -37,7 +37,7 @@ class StoreLogo extends Image
      * @return string
      * @author Michael Strohyi
      **/
-    function getAcceptFilter()
+    static public function getAcceptFilter()
     {
         return self::IMAGE_ACCEPT_FILTER;
     }
