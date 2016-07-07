@@ -36,8 +36,8 @@
             <label for="inputLogo" class="col-sm-2 control-label">New logo</label>            
             <div class="col-sm-10">
               <input type="file" class="form-control" id="inputLogo" placeholder="Choose new logo if you need" name="new_logo"
-              {% if store.primaryLogo.acceptFilter is not empty %} 
-              accept="{{ store.primaryLogo.acceptFilter }}"
+              {% if logo_filter is not empty %} 
+              accept="{{ logo_filter }}"
               {% endif %}
               >
             </div>
