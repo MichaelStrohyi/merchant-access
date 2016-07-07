@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__  . '/../../include/core.php';
+require_once __DIR__  . '/../../../include/core.php';
 
 $store_id = filter_input(INPUT_GET, 'store');
 $customer = getLoggedCustomer();

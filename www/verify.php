@@ -2,7 +2,7 @@
 
 define('LOGIN_CHECK', false);
 
-require_once __DIR__  . '/../../include/core.php';
+require_once __DIR__  . '/../include/core.php';
 require_once INCLUDE_DIR  . 'customers.php';
 
 $id = filter_input(INPUT_GET, 'id');
