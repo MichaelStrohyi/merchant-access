@@ -60,6 +60,13 @@ class Image
      **/
     protected $content;
 
+    /**
+     * Flag to show if any var was modified
+     *
+     * @var boolean
+     **/
+    private $isModified;
+
    
     public function __construct($id = null)
     {
@@ -89,7 +96,8 @@ class Image
      **/
     public function setWidth($width)
     {
-        $this->width = $width;;
+        $this->width = $width;
+        $this->isModified = true;
 
         return self;
     }
@@ -115,6 +123,7 @@ class Image
     public function setHeight($height)
     {
         $this->height = $height;
+        $this->isModified = true;
 
         return self;
     }
@@ -140,6 +149,7 @@ class Image
     public function setMime($mime)
     {
         $this->mime = $mime;
+        $this->isModified = true;
 
         return self;
     }
@@ -165,6 +175,7 @@ class Image
     public function setSize($size)
     {
         $this->size = $size;
+        $this->isModified = true;
     }
 
     /**
@@ -188,6 +199,7 @@ class Image
     public function setType($type)
     {
         $this->type = $type;
+        $this->isModified = true;
 
         return $this;
     }
@@ -213,6 +225,7 @@ class Image
     public function setName($name)
     {
         $this->name = $name;
+        $this->isModified = true;
 
         return $this;
     }
@@ -238,6 +251,7 @@ class Image
     public function setContent($content)
     {
         $this->picture = $picture;
+        $this->isModified = true;
 
         return $this;
     }
@@ -267,6 +281,8 @@ class Image
             return;
         }
 
+        $this->isModified = false;
+
         $query = "SELECT * FROM `images` WHERE `id` = $id";
         _QExec($query);
         $res_element = _QElem();
@@ -276,13 +292,13 @@ class Image
             return;
         }
 
-        $this->setWidth($res_element['width']);
-        $this->setHeight($res_element['height']);
-        $this->setMime($res_element['mime']);
-        $this->setSize($res_element['size']);
-        $this->setType($res_element['type']);
-        $this->setName($res_element['name']);
-        $this->setContent($res_element['content']);
+        $this->width = $res_element['width'];
+        $this->height = $res_element['height'];
+        $this->mime = $res_element['mime'];
+        $this->size = $res_element['size'];
+        $this->type = $res_element['type'];
+        $this->name = $res_element['name'];
+        $this->content = $res_element['content'];
     }
 
     /**
