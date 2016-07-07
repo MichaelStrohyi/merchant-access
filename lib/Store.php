@@ -131,8 +131,10 @@ class Store
      **/
     public function setName($name)
     {
-        $this->name = $name;
-        $this->isModified = true;
+        if ($this->name != $name) {
+            $this->name = $name;
+            $this->isModified = true;
+        }
 
         return $this;
     }
@@ -157,8 +159,10 @@ class Store
      **/
     public function setStatus($status)
     {
-        $this->status = $status;
-        $this->isModified = true;
+        if ($this->status != $status) {
+            $this->status = $status;
+            $this->isModified = true;
+        }
 
         return $this;
     }
@@ -184,8 +188,11 @@ class Store
     public function setUrl($url)
     {
         $url = $this->prepareUrl($url);
-        $this->url = $url;
-        $this->isModified = true;
+        
+        if ($this->url != $url) {
+            $this->url = $url;
+            $this->isModified = true;
+        }
 
         return $this;
     }
@@ -211,8 +218,10 @@ class Store
      **/
     public function setDescription($description)
     {
-        $this->description = $description;
-        $this->isModified = true;
+        if ($this->description != $description) {
+            $this->description = $description;
+            $this->isModified = true;
+        }
 
         return $this;
     }
@@ -237,8 +246,11 @@ class Store
      **/
     public function setKeywords($keywords)
     {
-        $this->keywords = $keywords;
-        $this->isModified = true;
+        if ($this->keywords != $keywords) {
+            $this->keywords = $keywords;
+            $this->isModified = true;
+        }
+
 
         return $this;
     }
@@ -346,8 +358,11 @@ class Store
     {
         # remove trailing spaces
         $email = $this->prepareEmail($email);
-        $this->email = $email;
-        $this->isModified = true;
+
+        if ($this->email != $email) {
+            $this->email = $email;
+            $this->isModified = true;
+        }
 
         return $this;
     }
@@ -547,6 +562,8 @@ class Store
         if ($new_id) {
             $this->id = _QID();
         }
+
+        $this->isModified = false;
 
         return true;
     }
