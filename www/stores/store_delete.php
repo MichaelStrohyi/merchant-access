@@ -33,13 +33,13 @@ if (isset($button_submit)) {
     emailConfirmation('store_rm_verification', ['store' => $store]);
 
      # display success store deleting page
-    echo $twig->render('Panel/success-store-rm.html.twig', [
+    echo $twig->render('Stores/success-store-rm.html.twig', [
         'store' => $store,
         ]);
     exit;
 }
 
-echo $twig->render('Panel/store-rm.html.twig', [
+echo $twig->render('Stores/store-rm.html.twig', [
     'store' => $store
     ]);
 

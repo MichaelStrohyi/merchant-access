@@ -118,7 +118,7 @@ function customerCanWork($store)
     $twig = getTwig();
 
     if (!$store->exists()) {
-        echo $twig->render('Panel/store-access-denied.html.twig', [
+        echo $twig->render('Stores/store-access-denied.html.twig', [
             'message' => 'You have no permission to work with this store',
             'url' => getPath('stores'),
             ]);
@@ -126,7 +126,7 @@ function customerCanWork($store)
     }
 
     if ($store->isWaitingRemoving()) {
-        echo $twig->render('Panel/store-access-denied.html.twig', [
+        echo $twig->render('Stores/store-access-denied.html.twig', [
             'message' => 'This store is waiting for removing validation. Please click validation link from email or <a href="' . getPath('resend_rm_verification', ['store' => $store]) . '">click here</a> to request new validation email',
             'url' => getPath('stores'),
             ]);
@@ -134,7 +134,7 @@ function customerCanWork($store)
     }
 
     if (!$store->isActive()) {
-        echo $twig->render('Panel/store-access-denied.html.twig', [
+        echo $twig->render('Stores/store-access-denied.html.twig', [
             'message' => 'You have not validated this store ownership yet. Please, validate it or <a href="' . getPath('resend_verification', ['store' => $store]) . '">click here</a> to request new validation email',
             'url' => getPath('stores'),
             ]);

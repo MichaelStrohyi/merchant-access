@@ -28,7 +28,7 @@ if (!empty($form_data)) {
         emailConfirmation('store_verification', ['store' => $store]);
         
         # display success store adding page
-        echo $twig->render('Panel/success-store-add.html.twig', [
+        echo $twig->render('Stores/success-store-add.html.twig', [
             'store' => $store,
             ]);
         exit;
@@ -37,6 +37,6 @@ if (!empty($form_data)) {
 
 # display store add page with errors if any exist}
 
-echo $twig->render('Panel/store-add.html.twig', [
+echo $twig->render('Stores/store-add.html.twig', [
     'store' => $store
     ]);

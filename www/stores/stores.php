@@ -14,7 +14,7 @@ $routes = ['store_info' => getPath('store_info'),
     'store_coupons' => getPath('store_coupons'),
     'store_add' => getPath('store_add'),
     ];
-echo $twig->render('Panel/stores.html.twig', [
+echo $twig->render('Stores/stores.html.twig', [
     'customer' => $customer,
     'routes' => $routes,
     ]);
