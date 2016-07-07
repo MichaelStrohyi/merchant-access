@@ -85,6 +85,13 @@ class Store
      **/
     private $logos;
 
+    /**
+     * Flag to show if any var was modified
+     *
+     * @var boolean
+     **/
+    private $isModified;
+
 
     public function __construct($customer = null, $id = null)
     {
@@ -125,6 +132,7 @@ class Store
     public function setName($name)
     {
         $this->name = $name;
+        $this->isModified = true;
 
         return $this;
     }
@@ -150,7 +158,8 @@ class Store
     public function setStatus($status)
     {
         $this->status = $status;
-        
+        $this->isModified = true;
+
         return $this;
     }
 
@@ -176,6 +185,8 @@ class Store
     {
         $url = $this->prepareUrl($url);
         $this->url = $url;
+        $this->isModified = true;
+
         return $this;
     }
 
@@ -201,6 +212,8 @@ class Store
     public function setDescription($description)
     {
         $this->description = $description;
+        $this->isModified = true;
+
         return $this;
     }
 
@@ -225,6 +238,8 @@ class Store
     public function setKeywords($keywords)
     {
         $this->keywords = $keywords;
+        $this->isModified = true;
+
         return $this;
     }
 
@@ -242,6 +257,7 @@ class Store
             return;
         }
 
+        $this->isModified = false;
         $query = "SELECT * FROM `stores` WHERE `id` = $id AND `owner` = $owner";
         _QExec($query);
         $res_element = _QElem();
@@ -252,13 +268,13 @@ class Store
         }
 
         $this->id = $id;
-        $this->setName($res_element['name']);
-        $this->setUrl($res_element['url']);
-        $this->setStatus($res_element['status']);
-        $this->setEmail($res_element['email']);
-        $this->setKeywords($res_element['keywords']);
-        $this->setDescription($res_element['description']);
-        $this->setLogos($this->getLogosList());
+        $this->name = $res_element['name']; 
+        $this->url = $res_element['url'];
+        $this->status = $res_element['status'];
+        $this->email = $res_element['email'];
+        $this->keywords = $res_element['keywords'];
+        $this->description = $res_element['description'];
+        $this->logos = $this->getLogosList();
     }
 
     /**
@@ -330,8 +346,8 @@ class Store
     {
         # remove trailing spaces
         $email = $this->prepareEmail($email);
-
         $this->email = $email;
+        $this->isModified = true;
 
         return $this;
     }
@@ -498,6 +514,10 @@ class Store
     public function save()
     {
         // !!! mockup, needed code to save logo
+        if (!$this->isModified) {
+            return true;
+        }
+
         $new_id = false;
 
         if ($this->exists()) {
