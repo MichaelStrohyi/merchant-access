@@ -61,6 +61,13 @@ class Customer
      **/
     private $status;
 
+    /**
+     * Flag to show if any var was modified
+     *
+     * @var boolean
+     **/
+    private $isModified;
+
 
     public function __construct($id = null)
     {
@@ -105,6 +112,7 @@ class Customer
         $name = trim(preg_replace('#\s+#', ' ', $name));
 
         $this->name = $name;
+        $this->isModified = true;
 
         return $this;
     }
@@ -157,6 +165,7 @@ class Customer
         $email = $this->prepareEmail($email);
 
         $this->email = $email;
+        $this->isModified = true;
 
         return $this;
     }
@@ -234,6 +243,7 @@ class Customer
     {
         if (!empty($password)) {
             $this->password = $this->encryptPassword($password);
+            $this->isModified = true;
         }
 
         return $this;
@@ -262,6 +272,7 @@ class Customer
     {
         if (!empty($password)) {
             $this->password_confirm = $this->encryptPassword($password);
+            $this->isModified = true;
         }
         
         return $this;
@@ -368,6 +379,10 @@ class Customer
      **/
     public function save()
     {
+        if (!$this->isModified) {
+            return true;
+        }
+
         $merchant_account = [
             'email' => $this->getEmail(),
             'password' => $this->getPassword(),
@@ -380,9 +395,9 @@ class Customer
 
         if ($res === false) {
             $this->id = null;
-            $this->eraseCustomerData();
             return false;
         }
+        
         $this->id = _QID();
         return true;
     }
@@ -490,7 +505,7 @@ class Customer
     }
 
     /**
-     * Set name
+     * Set status
      *
      * @param  string $status
      * @return self
@@ -499,6 +514,7 @@ class Customer
     public function setStatus($status)
     {
         $this->status = $status;
+        $this->isModified = true;
 
         return $this;
     }
@@ -517,6 +533,8 @@ class Customer
             return;
         }
 
+        $this->isModified = false;
+
         $query = "SELECT * FROM `merchants` WHERE `id` = $id";
         _QExec($query);
         $res_element = _QElem();
@@ -526,28 +544,12 @@ class Customer
             return;
         }
 
-        $this->setName($res_element['name']);
-        $this->setEmail($res_element['email']);
-        $this->setStatus($res_element['status']);
+        $this->name = $res_element['name'];
+        $this->email = $res_element['email'];
+        $this->status = $res_element['status'];
         $this->password = $res_element['password'];
 
         return;
-    }
-
-    /**
-     * Unset all vars for Customer
-     *
-     * @return void
-     * @author Michael Strohyi
-     **/
-    private function eraseCustomerData()
-    {
-        $this->email = null;
-        $this->name = null;
-        $this->password = null;
-        $this->password_confirm = null;
-        $this->errors = null;
-        $this->status = null;
     }
 
     /**
