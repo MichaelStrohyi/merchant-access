@@ -10,6 +10,15 @@ $form_data = filter_input(INPUT_POST, 'store', FILTER_DEFAULT, FILTER_REQUIRE_AR
 
 if (!empty($form_data)) {
     # steps to do when form was submitted
+
+
+    # if button Cancel is pressed
+    if (isset($form_data['buttonCancel'])) {
+        # redirect customer to stores.php
+        redirectToPage('stores');
+        exit;
+    }
+
     $store
         ->fetchInfo($form_data)
         ->validate()
