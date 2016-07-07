@@ -16,7 +16,7 @@ function getPath($route_name, $params = [])
             break;
 
         case 'login':
-            $location = '/accounts/login.php';
+            $location = '/auth/login.php';
             break;
 
         case 'registration':
@@ -25,36 +25,49 @@ function getPath($route_name, $params = [])
             
         case 'account_verification':
             $customer = $params['customer'];
-            $location = '/accounts/verify.php?id=' . $customer->getId() . '&hash=' . $customer->getHash();
+            $location = '/verify.php?id=' . $customer->getId() . '&hash=' . $customer->getHash();
             break;
 
         case 'store_verification':
             $store = $params['store'];
-            $location = '/accounts/store_verify.php?store=' . $store->getId() . '&action=add&' . '&id=' . $store->getCustomer()->getId() . '&hash=' . $store->getHash();
+            $location = '/stores/store_verify.php?store=' . $store->getId() . '&action=add&' . '&id=' . $store->getCustomer()->getId() . '&hash=' . $store->getHash();
             break;
 
         case 'store_rm_verification':
             $store = $params['store'];
-            $location = '/accounts/store_verify.php?store=' . $store->getId() . '&action=rm&' . '&id=' . $store->getCustomer()->getId() . '&hash=' . $store->getHash();
+            $location = '/stores/store_verify.php?store=' . $store->getId() . '&action=rm&' . '&id=' . $store->getCustomer()->getId() . '&hash=' . $store->getHash();
             break;
 
         case 'stores':
-            $location = '/accounts/stores.php';
+            $location = '/stores/stores.php';
             break;
 
         case 'resend_verification':
             $store = $params['store'];
-            $location = '/accounts/send_store_verification.php?store=' . $store->getId() . '&action=add';
+            $location = '/stores/send_store_verification.php?store=' . $store->getId() . '&action=add';
             break;
 
         case 'resend_rm_verification':
             $store = $params['store'];
-            $location = '/accounts/send_store_verification.php?store=' . $store->getId() . '&action=rm';
+            $location = '/stores/send_store_verification.php?store=' . $store->getId() . '&action=rm';
             break;
 
-        case 'login':
-            $location = '/accounts/login.php';
+        case 'store_rm':
+            $location = '/stores/store_delete.php?store=';
             break;
+
+        case 'store_coupons':
+            $location = '/stores/coupons/coupons.php?store=';
+            break;
+
+        case 'store_info':
+            $location = '/stores/store_info.php?store=';
+            break;
+
+        case 'store_add':
+            $location = '/stores/store_add.php';
+            break;
+
 
         default:
             $location = null;

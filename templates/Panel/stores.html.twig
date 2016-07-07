@@ -21,13 +21,13 @@
       <tr>
         <td>{{ store.name }}</td>
         <td>{{ store.status }}</td>
-        <td><a href="store_info.php?store={{ store.id }}">Info</a></td>
-        <td><a href="coupons.php?store={{ store.id }}">Coupons</a></td>
-        <td><a href="store_delete.php?store={{ store.id }}">Delete</a></td>
+        <td><a href="{{ routes.store_info }}{{ store.id }}">Info</a></td>
+        <td><a href="{{ routes.store_coupons }}{{ store.id }}">Coupons</a></td>
+        <td><a href="{{ routes.store_delete }}{{ store.id }}">Delete</a></td>
       </tr>
       {% endfor %}
       <tr>
-        <td><a href="store_add.php">Add new store</a></td>
+        <td><a href="{{ routes.store_add }}">Add new store</a></td>
       </tr>
     </tbody>
   </table>

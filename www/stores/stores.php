@@ -9,6 +9,12 @@ $customer = getLoggedCustomer();
 $stores = $customer->getStores();
 
 #render page with list of customer's stores
+$routes = ['store_info' => getPath('store_info'),
+    'store_delete' => getPath('store_rm'),
+    'store_coupons' => getPath('store_coupons'),
+    'store_add' => getPath('store_add'),
+    ];
 echo $twig->render('Panel/stores.html.twig', [
-    'customer' => $customer
+    'customer' => $customer,
+    'routes' => $routes,
     ]);
