@@ -25,21 +25,24 @@
           <div class="form-group">
             <label for="imageLogo" class="col-sm-2 control-label">Logo</label>
             <div class="col-sm-10">
-              {% if store.primaryLogo is not empty %}
+              {% if store.primaryLogo.exists %}
                 <img src="image.php?id={{ store.primaryLogo.id }}">
               {% else %}
                 Store has no logo
               {% endif %}
             </div>
           </div> 
-          <div class="form-group">
+          <div class="form-group {{ new_logo.hasError() ? 'has-error' : '' }}">
             <label for="inputLogo" class="col-sm-2 control-label">New logo</label>            
             <div class="col-sm-10">
               <input type="file" class="form-control" id="inputLogo" placeholder="Choose new logo if you need" name="new_logo"
-              {% if logo_filter is not empty %} 
-              accept="{{ logo_filter }}"
+              {% if store.primaryLogo.acceptFilter is not empty %} 
+              accept="{{ store.primaryLogo.acceptFilter }}"
               {% endif %}
               >
+              {% if new_logo.hasError() %}
+                <span id="helpBlock" class="help-block">{{ new_logo.errorString }}</span>
+              {% endif %}
             </div>
           </div> 
           <div class="form-group">
