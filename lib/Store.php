@@ -751,7 +751,8 @@ class Store
     {
         $logos = $this->getLogos();
         if (empty($logos)) {
-            return [];
+            $logo = new StoreLogo($this->id);
+            return $logo;
         }
        
         return $logos[0];
