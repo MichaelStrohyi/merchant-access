@@ -120,7 +120,7 @@ class Customer
     }
 
     /**
-     * Return true if current name has a valid form and not empty
+     * Check if current name has a valid form and not empty
      *
      * @return void
      * @author Mykola Martynov
@@ -187,7 +187,7 @@ class Customer
     }
 
     /**
-     * Return true if current email has a valid form and not empty
+     * Check if current email has a valid form and not empty
      *
      * @return void
      * @author Mykola Martynov
@@ -291,7 +291,7 @@ class Customer
     }
 
     /**
-     * Return true if current password not empty and equals to confirm password
+     * Check if current password not empty and equals to confirm password
      *
      * @return void
      * @author Mykola Martynov
