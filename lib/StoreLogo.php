@@ -5,15 +5,15 @@ namespace App;
 class StoreLogo extends Image
 {
 
-    const IMAGE_TYPE_LOGO = 'logo';
-    const IMAGE_MAX_WIDTH = '300';
-    const IMAGE_MAX_HEIGHT = '300';
-    const IMAGE_MAX_SIZE = '10240';
-    const IMAGE_MIME_PNG = 'image/png';
-    const IMAGE_MIME_JPG = 'image/jpg';
-    const IMAGE_MIME_JPEG = 'image/jpeg';
-    const IMAGE_MIME_GIF = 'image/gif';
-    const IMAGE_ACCEPT_FILTER = '.png,.jpg,.jpeg,.gif,image/png,image/jpg,image/jpeg,image/gif';
+    const LOGO_TYPE_LOGO = 'logo';
+    const LOGO_MAX_WIDTH = '300';
+    const LOGO_MAX_HEIGHT = '300';
+    const LOGO_MAX_SIZE = '10240';
+    const LOGO_MIME_PNG = 'image/png';
+    const LOGO_MIME_JPG = 'image/jpg';
+    const LOGO_MIME_JPEG = 'image/jpeg';
+    const LOGO_MIME_GIF = 'image/gif';
+    const LOGO_ACCEPT_FILTER = '.png,.jpg,.jpeg,.gif,image/png,image/jpg,image/jpeg,image/gif';
 
      /**
      * Store
@@ -39,6 +39,24 @@ class StoreLogo extends Image
      **/
     static public function getAcceptFilter()
     {
-        return self::IMAGE_ACCEPT_FILTER;
+        return self::LOGO_ACCEPT_FILTER;
+    }
+
+    /**
+     * Check if logo data match logo requirements.
+     *
+     * @return self
+     * @author Michael Strohyi
+     **/
+    public function validate()
+    {
+        parent::validateWidth(self::LOGO_MAX_WIDTH);
+        parent::validateHeight(self::LOGO_MAX_HEIGHT);
+        parent::validateSize(self::LOGO_MAX_SIZE);
+        parent::validateMime([self::LOGO_MIME_GIF,
+            self::LOGO_MIME_JPEG,
+            self::LOGO_MIME_JPG,
+            self::LOGO_MIME_PNG,
+            ]);
     }
 }
