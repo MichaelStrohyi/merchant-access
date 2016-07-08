@@ -19,6 +19,7 @@ $message = '';
 $customer = getLoggedCustomer();
 
 $store = new App\Store($customer, $store_id);
+$new_logo = new App\StoreLogo($store);
 
 # check if current $customer has access to $store
 if (!customerCanWork($store)) {
@@ -26,8 +27,7 @@ if (!customerCanWork($store)) {
 }
 
 # if button Cancel is pressed
-if (isset($form_data['buttonCancel']))
-    {
+if (isset($form_data['buttonCancel'])) {
     # redirect customer to stores.php
     redirectToPage('stores');
     exit;
@@ -38,16 +38,28 @@ if (isset($form_data['buttonSave']))
     {
     # grab data from $form_data to $store vars
     $store->fetchInfo($form_data);
-
     # if new logo is set
+
     if (!empty($_FILES['new_logo']['name']) && $_FILES['new_logo']['error'] == 0) {
-        # need to load new logo ad save it into db
+        $new_logo->gatherFileInfo($_FILES['new_logo']['tmp_name'], $_FILES['new_logo']['size']);
+        $new_logo->validate();
+
+        if (!$new_logo->isValid()) {
+            echo $twig->render('Stores/store-info.html.twig', [
+                'store' => $store,
+                'message' => $message,
+                'new_logo' => $new_logo,
+                ]);
+            exit;
+        }
+        
+        # need to save new_logo into db
         # ....
         # ....
         # ....
     }
 
-    # save $store to db
+    # save $store into db
     $store->save();
 
     $message = 'saved';
@@ -57,5 +69,5 @@ if (isset($form_data['buttonSave']))
 echo $twig->render('Stores/store-info.html.twig', [
     'store' => $store,
     'message' => $message,
-    'logo_filter' => App\StoreLogo::getAcceptFilter(),
+    'new_logo' => $new_logo,
     ]);
