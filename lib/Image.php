@@ -8,6 +8,7 @@ class Image
     const IMAGE_INVALID_HEIGHT = 'Image height must be less ';
     const IMAGE_INVALID_MIME = 'Image type must be ';
     const IMAGE_INVALID_SIZE = 'Image must have size less ';
+    const IMAGE_LOAD_ERROR = 'Some error happens. Please try to load New logo again';
 
      /**
      * Identifier (from the db)
@@ -83,6 +84,7 @@ class Image
     public function __construct($id = null)
     {
         $this->id = $id;
+        $this->isModified = false;
 
         #load image with given id
         $this->loadImageData();
@@ -106,7 +108,7 @@ class Image
      * @return self
      * @author Michael Strohyi
      **/
-    public function setWidth($width)
+    protected function setWidth($width)
     {
         if ($this->width != $width) {
             $this->width = $width;
@@ -134,7 +136,7 @@ class Image
      * @return self
      * @author Michael Strohyi
      **/
-    public function setHeight($height)
+    protected function setHeight($height)
     {
         if ($this->height != $height) {
             $this->height = $height;
@@ -162,7 +164,7 @@ class Image
      * @return self
      * @author Michael Strohyi
      **/
-    public function setMime($mime)
+    protected function setMime($mime)
     {
         if ($this->mime != $mime) {
             $this->mime = $mime;
@@ -190,7 +192,7 @@ class Image
      * @return self
      * @author Michael Strohyi
      **/
-    public function setSize($size)
+    protected function setSize($size)
     {
         if ($this->size != $size) {
             $this->size = $size;
@@ -218,7 +220,7 @@ class Image
      * @return self
      * @author Michael Strohyi
      **/
-    public function setType($type)
+    protected function setType($type)
     {
         if ($this->type != $type) {
             $this->type = $type;
@@ -246,7 +248,7 @@ class Image
      * @return self
      * @author Michael Strohyi
      **/
-    public function setName($name)
+    protected function setName($name)
     {
         if ($this->name != $name) {
             $this->name = $name;
@@ -274,7 +276,7 @@ class Image
      * @return self
      * @author Michael Strohyi
      **/
-    public function setContent($content)
+    protected function setContent($content)
     {
         if ($this->content != $content) {
             $this->content= $content;
@@ -290,7 +292,7 @@ class Image
      * @return string
      * @author Michael Strohyi
      **/
-    public function getcontent()
+    public function getContent()
     {
         return $this->content;
     }
@@ -328,6 +330,7 @@ class Image
         $this->type = $res_element['type'];
         $this->name = $res_element['name'];
         $this->content = $res_element['content'];
+
     }
 
     /**
@@ -350,25 +353,51 @@ class Image
      **/
     public function save()
     {
-        // !!! stub
+
+        if (!$this->isModified) {
+            return true;
+        }
+
+        $image = [
+            'width' => $this->getWidth(),
+            'height' => $this->getHeight(),
+            'mime' => $this->getMime(),
+            'size' => $this->getSize(),
+            'type' => $this->getType(),
+            'name' => $this->getName(),
+            'content' => $this->getContent(),
+            ];
+
+        $query = "INSERT INTO `images`  "._QInsert($image);
+        $res = _QExec($query);
+
+        if ($res === false) {
+            $this->id = null;
+            return false;
+        }
+
+        $this->id = _QID();
+        $this->isModified = false;
+        
         return true;
     }
 
     /**
      * Get image info from input file.
      *
-     * @param string $image_file
-     * @param int $file_size
+     * @param array $new_image
      * @return void
      * @author Michael Strohyi
      **/
-    public function gatherFileInfo($image_file, $file_size)
+    public function gatherFileInfo($new_image)
     {
-        $image_info = getimagesize($image_file);
-        $this->width = $image_info[0];
-        $this->height = $image_info[1];
-        $this->mime = $image_info['mime'];
-        $this->size = $file_size;
+        $image_info = getimagesize($new_image['tmp_name']);
+        $this->setWidth($image_info[0]);
+        $this->setHeight($image_info[1]);
+        $this->setMime($image_info['mime']);
+        $this->setSize($new_image['size']);
+        $this->setName($new_image['name']);
+        $this->setContent(file_get_contents($new_image['tmp_name']));
     }
 
     /**
@@ -458,5 +487,31 @@ class Image
     public function isValid()
     {
         return empty($this->error);
+    }
+
+    /**
+     * Check if content was successfully loaded.
+     *
+     * @return void
+     * @author Michael Strohyi
+     **/
+    public function validateContent()
+    {
+        if (empty($this->content)) {
+            $this->error = self::IMAGE_LOAD_ERROR;
+        }
+    }
+
+    /**
+     * Delete Image from db and return true. If some error happened return false.
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function delete()
+    {
+        $query = "DELETE FROM `images`  WHERE `id` = " . $this->getId(); 
+       
+        return  _QExec($query) != false;
     }
 }
