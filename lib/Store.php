@@ -688,7 +688,7 @@ class Store
     }
 
     /**
-     * Return true if store is waiting removing validation.
+     * Return true if store is successfully deleted from db.
      * Otherwise return false.
      *
      * @return boolean
