@@ -68,6 +68,9 @@ function getPath($route_name, $params = [])
             $location = '/stores/store_add.php';
             break;
 
+        case 'image':
+            $location = '/image.php';
+            break;
 
         default:
             $location = null;
