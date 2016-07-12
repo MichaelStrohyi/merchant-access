@@ -4,7 +4,7 @@ define('LOGIN_CHECK', false);
 
 require_once __DIR__  . '/../../include/core.php';
 
-$error = null;
+$error = [];
 
 $login_data = filter_input(INPUT_POST, 'login', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
 
@@ -16,9 +16,11 @@ if (!empty($login_data)) {
     $customer = App\Customer::findByEmail($email);
 
     if (!($customer->exists() && $customer->isPasswordMatch($password))) {
-        $error = 'Invalid email or password. Please try again.';
+        $error = ['string' => 'Invalid email or password. Please try again.'];
     } elseif (!$customer->isActive()) {
-        $error = 'Your account is not validated. Please, use link from validation mail.';
+        $error = ['string' => 'Your account is not validated. Please, use link from validation mail.',
+            'url' => getPath('resend_customer_verification', ['customer' => $customer]),
+            ];
     } else {
         setLoggedCustomer($customer);
        

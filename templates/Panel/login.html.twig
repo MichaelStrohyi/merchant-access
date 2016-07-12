@@ -20,7 +20,10 @@
             <div class="col-sm-10">
               <input type="password" class="form-control" id="inputPassword" placeholder="Password" name="login[password]" maxlenght="60">
               {% if error is not empty %}
-                <span id="helpBlock" class="help-block">{{ error }}</span>
+                <span id="helpBlock" class="help-block">{{ error.string }}</span>
+              {% endif %}
+              {% if error.url is not empty %}
+                <a href="{{ error.url|raw }}">Click here</a> to get new validation link
               {% endif %}
             </div>
           </div>
