@@ -35,7 +35,6 @@ if (isset($_POST['buttonSubmit'])) {
         # display success registration page
         echo $twig->render('Signup/success-registration.html.twig', [
             'customer' => $customer,
-            'action' => 'registered',
             ]);
         exit;
     }
