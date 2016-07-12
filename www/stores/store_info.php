@@ -20,7 +20,7 @@ $message = '';
 $customer = getLoggedCustomer();
 
 $store = new App\Store($customer, $store_id);
-$new_logo = new App\StoreLogo($store_id);
+$new_logo = new App\StoreLogo($store);
 
 # check if current $customer has access to $store
 if (!customerCanWork($store)) {

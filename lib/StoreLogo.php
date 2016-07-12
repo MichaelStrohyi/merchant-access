@@ -19,14 +19,14 @@ class StoreLogo extends Image
      /**
      * Store id
      *
-     * @var int
+     * @var App\Store
      **/
     private $store;
 
-    public function __construct($store_id, $logo_id = null)
+    public function __construct($store, $logo_id = null)
     {
         $this->id = $logo_id;
-        $this->store = $store_id;
+        $this->store = $store;
         #load image with given id
         $this->loadImageData();
     }
@@ -75,14 +75,13 @@ class StoreLogo extends Image
         }
 
         $this->setType(self::IMAGE_TYPE_LOGO);
-        $old_logo_id = $this->getId();
 
         if (!parent::save()) {
             return false;
         }
 
         $store_logo = [
-            'store_id' => $this->store,
+            'store_id' => $this->getStore()->getId(),
             'logo_id' => $this->getId(),
             ];
 
@@ -91,11 +90,6 @@ class StoreLogo extends Image
 
         if ($res === false) {
             return false;
-        }
-
-        if (!empty($old_logo_id)) {
-            $query = "DELETE FROM `store_logos`  WHERE `id` = $old_logo_id"; 
-            $res = _QExec($query);
         }
         
         return true;
@@ -114,7 +108,7 @@ class StoreLogo extends Image
             return false;
         }
 
-        $query = "DELETE FROM `store_logos`  WHERE `store_id` = " . $this->getStore() . " AND `logo_id` = " . $this->getId(); 
+        $query = "DELETE FROM `store_logos`  WHERE `store_id` = " . $this->getStore()->getId() . " AND `logo_id` = " . $this->getId(); 
  
         return  _QExec($query) != false;
 
@@ -123,7 +117,7 @@ class StoreLogo extends Image
     /**
      * Return store.
      *
-     * @return int
+     * @return App\Store
      * @author Michael Strohyi
      **/
     public function getStore()

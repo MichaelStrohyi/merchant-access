@@ -751,7 +751,7 @@ class Store
     {
         $logos = $this->getLogos();
         if (empty($logos)) {
-            $logo = new StoreLogo($this->id);
+            $logo = new StoreLogo($this);
             return $logo;
         }
        
@@ -801,7 +801,7 @@ class Store
         $logos_array = [];
 
         foreach ($res_assoc as $key => $value) {
-            $logo = new StoreLogo($id, $value['logo_id']);
+            $logo = new StoreLogo($this, $value['logo_id']);
 
             if ($logo->exists()) {
                 $logos_array [] = $logo;
