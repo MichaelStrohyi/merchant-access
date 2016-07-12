@@ -70,6 +70,11 @@ function getPath($route_name, $params = [])
 
         case 'image':
             $location = '/image.php';
+            break;        
+
+        case 'resend_customer_verification':
+            $customer = $params['customer'];
+            $location = '/send_customer_verification.php?id=' . $customer->getId();
             break;
 
         default:
