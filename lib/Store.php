@@ -595,7 +595,7 @@ class Store
      **/
     private function prepareUrl($url)
     {
-        $url = strtolower(trim($url));
+        $url = trim($url);
         return $url;
     }
 
