@@ -286,7 +286,7 @@ class Store
         $this->email = $res_element['email'];
         $this->keywords = $res_element['keywords'];
         $this->description = $res_element['description'];
-        $this->logos = $this->getLogosList();
+        $this->getLogosList();
     }
 
     /**
@@ -770,19 +770,7 @@ class Store
     }
 
     /**
-     * Set logos to given $logos
-     *
-     * @param array $logos
-     * @return self
-     * @author Michael Strohyi
-     **/
-    public function setLogos($logos)
-    {
-        $this->logos = $logos;      
-    }
-
-    /**
-     * Get list of logos for current store from db and return array of StoreLogo objects 
+     * Get list of logos for current store from db and save into var $logos array of StoreLogo objects 
      *
      * @return array
      * @author Michael Strohyi
@@ -792,6 +780,7 @@ class Store
         $id = $this->getId();
 
         if (empty($id)) {
+            $this->logos = null;
             return;
         }
 
@@ -808,6 +797,6 @@ class Store
             }
         }
 
-        return $logos_array;
+        $this->logos = $logos_array;
     }
 }
