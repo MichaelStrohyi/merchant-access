@@ -12,32 +12,31 @@ function emailConfirmation($template, $params = [])
     switch ($template) {
         case 'account_verification':
             $subject = 'Verify your registration at ' . SIGNUP_SERVER;
-            $message = getEmailMessage($template, $params);
-            break;
+            $email = $params['customer']->getEmail();
 
         case 'store_verification':
             $subject = 'Verify store ' . $params['store']->getName() . ' ownership';
-            $message = getEmailMessage($template, $params);
+            $email = $params['store']->getEmail();
             break;
         
         case 'store_rm_verification':
             $subject = 'Verify store ' . $params['store']->getName() . ' removing';
-            $message = getEmailMessage($template, $params);
-            break;
-        
-        case 'resend_rm_verification':
-            $subject = 'Verify store ' . $params['store']->getName() . ' removing';
-            $message = getEmailMessage($template, $params);
+            $email = $params['store']->getEmail();
             break;
         
         default:
             $subject = '';
             $message = '';
+            $email = '';
             break;
     }
-    echo "$subject <br> $message";
+
+    $message = getEmailMessage($template, $params);
+    
     if (!(defined('ENVIRONMENT') && ENVIRONMENT == 'development')) {
-        mail($customer->getEmail(), $subject, $message);
+        mail($email, $subject, $message);
+    } else {
+        echo '<table border=3><tr><td bgcolor="yellow">' . "$subject <br /> $message </tr></td></table>";
     }
 }
 
@@ -51,42 +50,10 @@ function emailConfirmation($template, $params = [])
  **/
 function getEmailMessage($template, $params = [])
 {
-    switch ($template) {
-        case 'account_verification':
-            $template_params = [
-                'customer' => $params['customer'],
-                'server' => SIGNUP_SERVER,
-                'validation_link' => getPath($template, ['customer' => $params['customer']]),
-                ];
-            break;
+    $template_params = [$params, 
+        'server' => SIGNUP_SERVER,
+        'validation_link' => getPath($template, $params),
+        ];
 
-        case 'store_verification':
-            $template_params = [
-                'store' => $params['store'],
-                'server' => SIGNUP_SERVER,
-                'validation_link' => getPath($template, ['store' => $params['store']]),
-                ];
-            break;
-
-        case 'store_rm_verification':
-            $template_params = [
-                'store' => $params['store'],
-                'server' => SIGNUP_SERVER,
-                'validation_link' => getPath($template, ['store' => $params['store']]),
-                ];
-            break;
-
-        case 'resend_rm_verification':
-            $template_params = [
-                'store' => $params['store'],
-                'server' => SIGNUP_SERVER,
-                'validation_link' => getPath($template, ['store' => $params['store']]),
-                ];
-            break;
-
-        default:
-            $template_params = [];
-            break;
-    }
     return getTwig()->render("Email/${template}.html.twig", $template_params);
 }
