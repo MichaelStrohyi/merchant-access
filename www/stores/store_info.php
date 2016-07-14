@@ -66,6 +66,7 @@ if (isset($form_data['buttonSave']))
 
     # save $store into db
     $store->save();
+    $store->getLogosList();
 
     $message = 'saved';
 }
