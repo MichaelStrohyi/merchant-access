@@ -13,7 +13,7 @@
         <th>Status</th>
         <th>Info</th>
         <th>Coupons</th>
-        <th>Delete</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -23,14 +23,18 @@
         <td>{{ store.status }}</td>
         <td><a href="{{ routes.store_info }}{{ store.id }}">Info</a></td>
         <td><a href="{{ routes.store_coupons }}{{ store.id }}">Coupons</a></td>
-        <td><a href="{{ routes.store_delete }}{{ store.id }}">Delete</a></td>
+        {% if store.isWaitingRemoving() %}
+          <td><a href="{{ routes.store_verify_delete }}{{ store.id }}">Verify removing</a></td>
+        {% elseif store.isWaitingValidation() %}
+          <td><a href="{{ routes.store_activate }}{{ store.id }}">Activate</a></td>
+        {% elseif store.isActive() %}
+          <td><a href="{{ routes.store_delete }}{{ store.id }}">Remove</a></td>
+        {% endif %}
       </tr>
       {% endfor %}
-      <tr>
-        <td><a href="{{ routes.store_add }}">Add new store</a></td>
-      </tr>
     </tbody>
   </table>
+  <a href="{{ routes.store_add }}">Add new store</a>
   </div>
 </div>
 {% endblock %}
