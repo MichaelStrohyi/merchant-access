@@ -811,7 +811,7 @@ class Store
      **/
     private function prepareName($name)
     {
-        $name = trim(preg_replace('/s+/', ' ',  $name));
+        $name = trim(preg_replace('/\s+/', ' ',  $name));
         return $name;
     }
 }
