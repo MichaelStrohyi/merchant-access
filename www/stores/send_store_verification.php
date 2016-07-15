@@ -32,6 +32,7 @@ switch ($action) {
         # display success store adding page
         echo $twig->render('Stores/success-store-add.html.twig', [
             'store' => $store,
+            'url' => getPath('stores'),
             ]);
         exit;
         break;
@@ -50,6 +51,7 @@ switch ($action) {
         # display success store adding page
         echo $twig->render('Stores/success-store-rm.html.twig', [
             'store' => $store,
+            'url' => getPath('stores'),
             ]);
         exit;
         break;
