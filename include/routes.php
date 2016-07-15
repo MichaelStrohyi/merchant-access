@@ -43,13 +43,21 @@ function getPath($route_name, $params = [])
             break;
 
         case 'resend_verification':
-            $store = $params['store'];
-            $location = '/stores/send_store_verification.php?store=' . $store->getId() . '&action=add';
+            $location = '/stores/send_store_verification.php?action=add&store=';
+
+            if (!empty($params)) {
+                $location.= $params['store']->getId();
+            }
+
             break;
 
         case 'resend_rm_verification':
-            $store = $params['store'];
-            $location = '/stores/send_store_verification.php?store=' . $store->getId() . '&action=rm';
+            $location = '/stores/send_store_verification.php?action=rm&store=';
+
+            if (!empty($params)) {
+                $location.= $params['store']->getId();
+            }
+
             break;
 
         case 'store_rm':
