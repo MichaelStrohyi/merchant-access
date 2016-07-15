@@ -39,6 +39,7 @@ if (!empty($form_data)) {
         # display success store adding page
         echo $twig->render('Stores/success-store-add.html.twig', [
             'store' => $store,
+            'url' => getPath('stores'),
             ]);
         exit;
     }
