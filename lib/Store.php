@@ -5,7 +5,7 @@ namespace App;
 class Store
 {
     const STORE_REQUIRED_FIELD = 'This is a required field.';
-    const STORE_NAME_MALFORMED = 'Name contains deprecated characters. Allowed only alpha characters.';
+    const STORE_NAME_MALFORMED = 'Name contains deprecated characters. Allowed only printable characters.';
     const STORE_EMAIL_NOT_VALID = 'Please, enter valid Email';
     const STORE_EMAIL_WRONG_DOMAIN = "To add store you MUST use email on the store's domain";
     const STORE_URL_NOT_VALID = 'Please, enter valid URL (with http:// or https://)';
@@ -131,6 +131,8 @@ class Store
      **/
     public function setName($name)
     {
+        $name = $this->prepareName($name);
+
         if ($this->name != $name) {
             $this->name = $name;
             $this->isModified = true;
@@ -329,8 +331,8 @@ class Store
             return;
         }
 
-        # check if a name has only allowed characters (alpha only)
-        if (!preg_match('#^[a-z]+(\s[a-z]+)?$#i', $name)) {
+        # check if a name has only allowed characters (printable only)
+        if (!ctype_print($name)) {
             $this->errors['name'] = self::STORE_NAME_MALFORMED;
             return;
         }
@@ -798,5 +800,18 @@ class Store
         }
 
         $this->logos = $logos_array;
+    }
+
+    /**
+     * Prepare given $name to use in Store
+     *
+     * @param string $name
+     * @return string
+     * @author Michael Strohyi
+     **/
+    private function prepareName($name)
+    {
+        $name = trim(preg_replace('/s+/', ' ',  $name));
+        return $name;
     }
 }
