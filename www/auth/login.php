@@ -5,6 +5,7 @@ define('LOGIN_CHECK', false);
 require_once __DIR__  . '/../../include/core.php';
 
 $error = [];
+$email = '';
 
 $login_data = filter_input(INPUT_POST, 'login', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
 
@@ -29,6 +30,6 @@ if (!empty($login_data)) {
     }
 }
 
-echo $twig->render('Panel/login.html.twig', [
+echo $twig->render('Panel/login.html.twig', [ 'email' => $email,
     'error' => $error
     ]);
