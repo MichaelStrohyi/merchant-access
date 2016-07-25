@@ -39,12 +39,28 @@ if (isset($form_data['buttonSave']))
     {
     # grab data from $form_data to $store vars
     $store->fetchInfo($form_data);
-    # if new logo is set
+    # if logo was removed
+    if (isset($form_data['removePrimaryLogo'])) {
+        # delete primary logo from db
+        if (!$store->getPrimaryLogo()->delete()) {
+            if (!(defined('ENVIRONMENT') && ENVIRONMENT == 'development')) {
+                $message = 'Some arror happens. Please, try again later.';
+            } else {
+                $message = '<table border=3><tr><td bgcolor="yellow">Error happens trying to delete Primary Logo</tr></td></table>';
+            }
 
+            echo $twig->render('Signup/db-access-error.html.twig', [
+                'customer' => $store->getCustomer(),
+                'message' => $message,
+                ]);
+        }
+    }
+
+    # if new logo is set
     if (!empty($_FILES['new_logo']['name']) && $_FILES['new_logo']['error'] == 0) {
         $new_logo->gatherFileInfo($_FILES['new_logo']);
         $new_logo->validate();
-
+        # if new logo not valid
         if (!$new_logo->isValid()) {
             echo $twig->render('Stores/store-info.html.twig', [
                 'store' => $store,
