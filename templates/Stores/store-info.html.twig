@@ -8,7 +8,7 @@
         <header align="center">
           <h3>Store {{ store.name }} info</h3>
         </header>
-        <form class="form-horizontal" method="post" name="store_form" enctype="multipart/form-data">
+        <form class="form-horizontal" id="mainForm" method="post" name="store_form" enctype="multipart/form-data">
           <div class="form-group">
             <label for="inputName" class="col-sm-2 control-label">Name</label>
             <div class="col-sm-10">
@@ -24,9 +24,10 @@
           </div>
           <div class="form-group">
             <label for="imageLogo" class="col-sm-2 control-label">Logo</label>
-            <div class="col-sm-10">
+            <div class="col-sm-10" id="currentLogo">
               {% if store.primaryLogo.exists %}
                 <img src="{{ url }}?id={{ store.primaryLogo.id }}">
+                <button type="button" onclick="removeLogo();">Remove</button>
               {% else %}
                 Store has no logo
               {% endif %}
@@ -43,6 +44,7 @@
               {% if new_logo.hasError() %}
                 <span id="helpBlock" class="help-block">{{ new_logo.errorString }}</span>
               {% endif %}
+              <button type="button" onclick="clearLogo();">Clear</button>
             </div>
           </div> 
           <div class="form-group">
@@ -60,6 +62,7 @@
           <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
               <button type="submit" class="btn btn-default" name="store[buttonSave]">Save</button>
+              <button type="reset" class="btn btn-default" name="store[buttonReset]">Reset</button>
               <button type="submit" class="btn btn-default" name="store[buttonCancel]">Cancel</button>
             </div>
           </div>
@@ -70,6 +73,19 @@
 
 {% block javascripts %}
   {{ parent() }}
+  <script type="text/javascript">
+    window.removeLogo = function () {
+      $("#currentLogo").replaceWith('<div class="col-sm-10" id="currentLogo">Store has no logo <input type="hidden" class="form-control" id="removeLogo" name="store[removePrimaryLogo]"></div>');
+    };
+
+    window.clearLogo = function() {
+      $("#inputLogo").val("");
+    };
+
+    $("#mainForm").on('reset', function() {
+      setTimeout(function() { $("#currentLogo").replaceWith('<div class="col-sm-10" id="currentLogo"><img src="{{ url }}?id={{ store.primaryLogo.id }}"><button id="removeButton" onclick="removeLogo();">Remove</button></div>') });
+    });
+  </script>
   {% if message == 'saved' %}
   <script> alert('Store {{ store.name }} updated successfully')</script>
   {% endif %}
