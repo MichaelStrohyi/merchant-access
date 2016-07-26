@@ -17,7 +17,7 @@ class StoreLogo extends Image
     const IMAGE_TYPE_LOGO = 'logo';
 
      /**
-     * Store id
+     * Store
      *
      * @var App\Store
      **/
@@ -37,7 +37,7 @@ class StoreLogo extends Image
      * @return string
      * @author Michael Strohyi
      **/
-    static public function getAcceptFilter()
+    public function getAcceptFilter()
     {
         return self::LOGO_ACCEPT_FILTER;
     }
@@ -70,16 +70,24 @@ class StoreLogo extends Image
      **/
     function save()
     {
+        # check if logo was modified
         if (!$this->isModified) {
             return true;
         }
+
+        # save if image is already in db
+        $image_exists = $this->exists();
 
         $this->setType(self::IMAGE_TYPE_LOGO);
 
         if (!parent::save()) {
             return false;
         }
-
+        # return if image is already in db (not new image)
+        if ($image_exists) {
+            return true;
+        }
+        # if image is new save relation image_id-store_id into db 'store_images'
         $store_logo = [
             'store_id' => $this->getStore()->getId(),
             'logo_id' => $this->getId(),
