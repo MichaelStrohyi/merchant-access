@@ -14,6 +14,7 @@ if (isset($form_data['id'])) {
 
 }
 
+# unset flag 'store is saved'
 $message = '';
 
 # check if current $customer has logged in
@@ -39,29 +40,33 @@ if (isset($form_data['buttonSave']))
     {
     # grab data from $form_data to $store vars
     $store->fetchInfo($form_data);
-    # if logo was removed
+    # if customer chose to delete logo
     if (isset($form_data['removePrimaryLogo'])) {
         # delete primary logo from db
-        if (!$store->getPrimaryLogo()->delete()) {
+        if (!$store->deletePrimaryLogo()) {
+            # if logo was not deleted create error message depending on working mode
             if (!(defined('ENVIRONMENT') && ENVIRONMENT == 'development')) {
                 $message = 'Some arror happens. Please, try again later.';
             } else {
                 $message = '<table border=3><tr><td bgcolor="yellow">Error happens trying to delete Primary Logo</tr></td></table>';
             }
-
+            # display error page
             echo $twig->render('Signup/db-access-error.html.twig', [
                 'customer' => $store->getCustomer(),
                 'message' => $message,
                 ]);
+            exit;
         }
     }
 
     # if new logo is set
     if (!empty($_FILES['new_logo']['name']) && $_FILES['new_logo']['error'] == 0) {
+        # validate new logo
         $new_logo->gatherFileInfo($_FILES['new_logo']);
         $new_logo->validate();
         # if new logo not valid
         if (!$new_logo->isValid()) {
+            # display error page
             echo $twig->render('Stores/store-info.html.twig', [
                 'store' => $store,
                 'message' => $message,
@@ -70,20 +75,15 @@ if (isset($form_data['buttonSave']))
                 ]);
             exit;
         }
-
-        if (!$new_logo->save() || $store->getPrimaryLogo()->exists() && !$store->getPrimaryLogo()->delete()) {
-            echo $twig->render('Signup/db-access-error.html.twig', [
-                    'customer' => $store->getCustomer(),
-                    'message' => 'Some arror happens. Please, try again later.',
-                    ]);
-            exit;
-        }
+        # load new logo into primary logo
+        $store->getPrimaryLogo()->gatherFileInfo($_FILES['new_logo']);
     }
 
     # save $store into db
     $store->save();
+    #get actual logo list for store
     $store->getLogosList();
-
+    #set flag 'store is saved'
     $message = 'saved';
 }
 
