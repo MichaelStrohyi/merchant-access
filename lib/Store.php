@@ -530,7 +530,10 @@ class Store
      **/
     public function save()
     {
-        // !!! mockup, needed code to save logo
+        if ($this->getPrimaryLogo()->getIsModified() && !$this->getPrimaryLogo()->save()) {
+            return false;
+        }
+
         if (!$this->isModified) {
             return true;
         }
@@ -743,8 +746,7 @@ class Store
     }
 
     /**
-     * Return first logo from $logos array if it is not empty.
-     * Otherwise return empty array.
+     * Return first logo from $logos array
      *
      * @return array
      * @author Michael Strohyi
@@ -752,11 +754,6 @@ class Store
     public function getPrimaryLogo()
     {
         $logos = $this->getLogos();
-        if (empty($logos)) {
-            $logo = new StoreLogo($this);
-            return $logo;
-        }
-       
         return $logos[0];
     }
 
@@ -772,7 +769,8 @@ class Store
     }
 
     /**
-     * Get list of logos for current store from db and save into var $logos array of StoreLogo objects 
+     * Get list of logos for current store from db and save into var $logos array of StoreLogo objects.
+     * If there is no logos for current store save into var $logos one new StoreLogo object.
      *
      * @return array
      * @author Michael Strohyi
@@ -799,6 +797,10 @@ class Store
             }
         }
 
+        if (empty($logos_array)) {
+            $logos_array [] = new StoreLogo($this);
+        }
+
         $this->logos = $logos_array;
     }
 
@@ -813,5 +815,22 @@ class Store
     {
         $name = trim(preg_replace('/\s+/', ' ',  $name));
         return $name;
+    }
+
+    /**
+     * Calls StoreLogo::delete() and after cleanes primary logo in $logos.
+     * Retrun true if no errors happened, otherwise return false.
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function deletePrimaryLogo()
+    {
+        if (!$this->getPrimaryLogo()->delete()) {
+            return false;
+        }
+
+        $this->logos[0] = new StoreLogo($this);
+        return true;
     }
 }
