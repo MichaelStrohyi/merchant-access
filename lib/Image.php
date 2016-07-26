@@ -367,8 +367,13 @@ class Image
             'name' => $this->getName(),
             'content' => $this->getContent(),
             ];
+        # check if image is new or already is in db and choose neccessary query
+        if ($this->exists()) {
+            $query = "UPDATE `images` SET " . _QUpdate($image) . " WHERE `id` = " . $this->getId();
+        } else {
+            $query = "INSERT INTO `images`  " . _QInsert($image);
+        }
 
-        $query = "INSERT INTO `images`  "._QInsert($image);
         $res = _QExec($query);
 
         if ($res === false) {
@@ -513,5 +518,16 @@ class Image
         $query = "DELETE FROM `images`  WHERE `id` = " . $this->getId(); 
        
         return  _QExec($query) != false;
+    }
+
+    /**
+     * Return isModified
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function getIsModified()
+    {
+        return $this->isModified;
     }
 }
