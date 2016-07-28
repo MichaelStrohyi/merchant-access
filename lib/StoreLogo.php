@@ -5,7 +5,6 @@ namespace App;
 class StoreLogo extends Image
 {
 
-    const LOGO_TYPE_LOGO = 'logo';
     const LOGO_MAX_WIDTH = '300';
     const LOGO_MAX_HEIGHT = '300';
     const LOGO_MAX_SIZE = '10240';
