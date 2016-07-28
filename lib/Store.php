@@ -92,6 +92,13 @@ class Store
      **/
     private $isModified;
 
+    /**
+     * array of App\Coupon related to store
+     *
+     * @var array
+     **/
+    private $coupons;
+
 
     public function __construct($customer = null, $id = null)
     {
@@ -289,6 +296,7 @@ class Store
         $this->keywords = $res_element['keywords'];
         $this->description = $res_element['description'];
         $this->getLogosList();
+        $this->getCouponsList();
     }
 
     /**
@@ -772,7 +780,7 @@ class Store
      * Get list of logos for current store from db and save into var $logos array of StoreLogo objects.
      * If there is no logos for current store save into var $logos one new StoreLogo object.
      *
-     * @return array
+     * @return void
      * @author Michael Strohyi
      **/
     public function getLogosList()
@@ -832,5 +840,70 @@ class Store
 
         $this->logos[0] = new StoreLogo($this);
         return true;
+    }
+
+    /**
+     * Return coupons
+     *
+     * @return array
+     * @author Michael Strohyi
+     **/
+    public function getCoupons()
+    {
+        // !!! stub
+        //return $this->coupons;
+
+        $coupons [] = ['id' => '10',
+            'label' => 'coupon description10',
+            'code' => 'CODE10',
+            'link' => 'http://example.com10',
+            'startDate' => '2016-08-01',
+            'expireDate' => '2016-08-31',
+            'position' => '1',
+            'image' => new CouponImage(new Coupon($this)),
+            'parentId'=> '20',
+            ];
+        $coupons [] = ['id' => '2',
+            'label' => 'coupon description2',
+            'code' => '',
+            'link' => 'http://example.com2',
+            'startDate' => '',
+            'expireDate' => '',
+            'position' => '2',
+            'image' => new CouponImage(new Coupon($this), 35),
+            'parentId'=> '20',
+            ];
+        return $coupons;
+    }
+
+    /**
+     * Get list of coupons for current store from db and save array of App\Coupon objects into var $coupons.
+     *
+     * @return void
+     * @author Michael Strohyi
+     **/
+    public function getCouponsList()
+    {
+        $id = $this->getId();
+
+        if (empty($id)) {
+            $this->coupons = null;
+            return;
+        }
+
+        $query = "SELECT * FROM `coupons` WHERE `store_id` = $id";
+        _QExec($query);
+        $res_assoc = _QAssoc();
+        $coupons_array = [];
+
+        foreach ($res_assoc as $key => $value) {
+            $coupon = new Coupon($this, $value['id']);
+
+            if ($coupon->exists()) {
+                $coupons_array [] = $coupon;
+            }
+        }
+
+        $this->coupons = $coupons_array;
     }
 }
