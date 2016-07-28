@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Store {{ store.name }} - Coupons{% endblock %}
+
+{% block body %}
+    <div class="container">
+      <div id="coupons-form">
+        <header align="center">
+          <h3>Store {{ store.name }} coupons</h3>
+        </header>
+         <form class="form-horizontal" id="mainForm" method="post" name="coupons_form" enctype="multipart/form-data">
+          <div id="coupons-table">
+            <table class="table-responsive">
+              <thead>
+                <tr style="border-bottom: 3px solid #ddd">
+                  <th style="width: 2%"></th>
+                  <th colspan="4" style="width: 50%">Description</th>
+                  <th style="width: 10%">Code</th>
+                  <th style="width: 20%">Url</th>
+                  <th style="width: 9%">Date</th>
+                  <th style="width: 9%">Actions</th>              
+                </tr>
+              </thead>
+              {% if store.coupons is empty %}
+              <tr>
+                <td colspan="9" style="text-align: center">No coupons for this store</td>
+              </tr>
+              {% endif %}
+              {% for coupon in store.coupons %}
+                <tr style="vertical-align:top; border-bottom: 1px solid #ddd">
+                  <td rowspan="2">{{ coupon.position }}</td>
+                  <td colspan="4">
+                    <textarea class="form-control" rows="3" name="coupons[{{ coupon.id }}][label]">{{ coupon.label }}</textarea>
+                    <input type="hidden" class="form-control" name="coupons[{{ coupon.id }}][parent_id]" value="{{ coupon.parentId }}">
+                  </td>
+                  <td><input class="form-control" type="text" name="coupons[{{ coupon.id }}][code]" value="{{ coupon.code }}"></td>
+                  <td><input class="form-control" type="text" name="coupons[{{ coupon.id }}][link]" value="{{ coupon.link }}"></td>
+                  <td>
+                    Starts:
+                    <input class="form-control" type="text" name="coupons[{{ coupon.id }}][start_date]" value="{{ coupon.startDate}}">
+                    Expires:
+                    <input class="form-control" type="text" name="coupons[{{ coupon.id }}][expire_date]" value="{{ coupon.expireDate }}">
+                  </td>
+                  <td>
+                    <a href="#" onclick="" style="font-size: 10pt">First</a></br>
+                    <a href="#" onclick="" style="font-size: 10pt">Last</a></br>
+                    <a href="#" onclick="" style="font-size: 10pt">Up</a></br>
+                    <a href="#" onclick="" style="font-size: 10pt">Down</a></br>
+                    <a href="#" onclick="" style="font-size: 10pt">Deactivate</a></br>
+                    <a href="#" onclick="" style="font-size: 10pt">Remove</a>
+                  </td>
+                </tr>
+                <tr style="vertical-align:top; border-bottom: 3px solid #ddd">
+                  <td>
+                    <div id="Image{{ coupon.id }}">  
+                      {% if coupon.image.exists %}        
+                        <img height="50px" src="{{ url }}?id={{ coupon.image.id }}" onclick="openImageWindow(this.src);">
+                        <button type="button" onclick="removeImage('{{ coupon.id }}', '{{ coupon.image.id }}');">Remove</button>
+                      {% else %}
+                        <img height="50px" src="{{ url }}?id=1">
+                      {% endif %}
+                    </div>
+                  </td>
+                  <td colspan="3">
+                    <div class="form-group {{ new_image[coupon.id].hasError ? 'has-error' : '' }}">                  
+                      <input type="file" class="form-control" id="inputImage{{ coupon.id }}" placeholder="Choose image for coupon if needed" name="coupons[{{ coupon.id }}][new_image]"
+                      {% if coupon.image.acceptFilter is not empty %} 
+                        accept="{{ store.primaryLogo.acceptFilter }}"
+                      {% endif %}
+                      >
+                      {% if new_image[coupon.id].hasError %}
+                        <span id="helpBlock" class="help-block">{{ new_image[coupon.id].errorString }}</span>
+                      {% endif %}
+                      <button type="button" onclick="clearImage('{{ coupon.id }}');">Clear</button>
+                    </div>
+                  </td>
+                  <td colspan="5"></td>
+                </tr>
+              {% endfor %}
+            </table>
+            <a href="#">Add new coupon</a>
+            <div>
+              <input type="hidden" class="form-control" name="store_id" value="{{ store.id }}">
+              <button type="submit" class="btn btn-default" name="coupon[buttonSave]">Save</button>
+              <button type="reset" class="btn btn-default" name="coupon[buttonReset]">Reset</button>
+              <button type="submit" class="btn btn-default" name="coupon[buttonCancel]">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script type="text/javascript">
+    window.openImageWindow = function (src) {
+      var image = new Image();
+      image.src = src;
+      var width = image.width;
+      var height = image.height;
+      window.open(src,"Image","width=" + width + ",height=" + height);
+    }
+
+    window.removeImage = function (coupon_id, image_id) {
+      $("#Image" + coupon_id).replaceWith('<div id="Image' + coupon_id + '"><img height="50px" src="{{ url }}?id=1"><button type="button" onclick="returnImage(' + "'" + coupon_id + "', '" + image_id + "'" + ');">Return Image</button> <input type="hidden" class="form-control" id="removeImage"' + coupon_id + ' name="coupons[' + coupon_id + '][removeImage]></div>');
+    };
+
+    window.clearImage = function(coupon_id) {
+      $("#inputImage" + coupon_id).val("");
+    };
+
+    window.returnImage = function (coupon_id, image_id) {
+      $("#Image" + coupon_id).replaceWith('<div id="Image' + coupon_id + '"><img width="50px" src="{{ url }}?id=' + image_id + '" onclick="openImageWindow(this.src);"><button type="button" onclick="removeImage(' + "'" + coupon_id + "', '" + image_id + "'" +  ');">Remove</button></div>');
+    };
+
+  {% if message == 'saved' %}
+    alert('Store {{ store.name }} coupons updated successfully')
+  {% endif %}
+  </script>
+{% endblock %}
