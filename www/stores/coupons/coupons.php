@@ -2,20 +2,18 @@
 
 require_once __DIR__  . '/../../../include/core.php';
 
-# get variables from $_GET
-$store_id = filter_input(INPUT_GET, 'store');
-
 # get store_id from $_POST
-$form_data = filter_input(INPUT_POST, 'store_id', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
+$store_id = filter_input(INPUT_POST, 'store_id');
+
+# if $store_id is not set get it from $_GET
+if (!isset($store_id_post)) {
+    # get variables from $_GET
+    $store_id = filter_input(INPUT_GET, 'store');
+}
 
 # get variables from $_POST
-$form_data = filter_input(INPUT_POST, 'store', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
-
-# get store_id from $_POST if it is set
-if (isset($form_data['id'])) {
-    $store_id = $form_data['id'];
-
-}
+$coupons_data = filter_input(INPUT_POST, 'coupons', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
+$buttons_data = filter_input(INPUT_POST, 'buttons', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
 
 # unset flag 'coupons is updatedd'
 $message = '';
@@ -31,17 +29,22 @@ if (!customerCanWork($store)) {
 }
 
 # if button Cancel is pressed
-if (isset($form_data['buttonCancel'])) {
+if (isset($buttons_data['buttonCancel'])) {
     # redirect customer to stores.php
     redirectToPage('stores');
     exit;
 }
 
-// !!! mockup
-$new_image[10] = ['errorString' => 'Some error for 1st image',
-    'hasError' => true,
-    ];
-// !!! endof mockup
+# if button Save is pressed
+if (isset($buttons_data['buttonSave']))
+    {
+    # grab data from $coupons_data to $coupons vars
+    $coupons = $store->getCoupons();
+    foreach ($coupons_data as $coupon_id => $value) {
+        $coupons[$coupon_id]->fetchInfo($value);
+        $coupons[$coupon_id]->validate();
+    }
+}
 
 # display coupons page
 echo $twig->render('Coupons/coupons-list.html.twig', [
