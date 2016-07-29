@@ -850,30 +850,7 @@ class Store
      **/
     public function getCoupons()
     {
-        // !!! stub
-        //return $this->coupons;
-
-        $coupons [] = ['id' => '10',
-            'label' => 'coupon description10',
-            'code' => 'CODE10',
-            'link' => 'http://example.com10',
-            'startDate' => '2016-08-01',
-            'expireDate' => '2016-08-31',
-            'position' => '1',
-            'image' => new CouponImage(new Coupon($this)),
-            'parentId'=> '20',
-            ];
-        $coupons [] = ['id' => '2',
-            'label' => 'coupon description2',
-            'code' => '',
-            'link' => 'http://example.com2',
-            'startDate' => '',
-            'expireDate' => '',
-            'position' => '2',
-            'image' => new CouponImage(new Coupon($this), 35),
-            'parentId'=> '20',
-            ];
-        return $coupons;
+        return $this->coupons;
     }
 
     /**
