@@ -4,6 +4,13 @@ namespace App;
 
 class Coupon
 {
+    const COUPON_REQUIRED_FIELD = 'This is a required field.';
+    const COUPON_LABEL_MALFORMED = 'Label contains deprecated characters. Allowed only printable characters.';
+    const COUPON_CODE_MALFORMED = 'Code contains deprecated characters. Allowed only printable characters.';
+    const COUPON_DATE_MALFORMED = 'Date is incorrect.';
+    const COUPON_LINK_NOT_VALID = 'Please, enter valid link (with http:// or https://)';
+
+
     /**
      * Identifier (from the db)
      *
@@ -80,6 +87,13 @@ class Coupon
      * @var boolean
      **/
     private $isModified;
+
+    /**
+     * Errors
+     *
+     * @var array
+     **/
+    private $errors;
 
 
     public function __construct($store , $id = null)
@@ -364,4 +378,196 @@ class Coupon
         return !empty($id);
     }
 
+    /**
+     * Fill in coupon vars from the given $info. 
+     * Keep non-existing fields empty.
+     *
+     * @param  array $info
+     * @return self
+     * @author Michael Strohyi
+     **/
+    public function fetchInfo($info)
+    {
+        $this->setLabel($info['label']);
+        $this->setCode($info['code']);
+        $this->setLink($info['link']);
+        $this->setStartDate($info['startDate']);
+        $this->setExpireDate($info['expireDate']);
+        $this->setPosition($info['position']);
+
+        if (!isset($info['removeImage'])) {
+            $this->deleteImage();
+        }
+
+        if (!empty($info['newImage'])) {
+            loadNewImage($info['newImage']);
+        }
+        
+        return $this;
+    }
+
+    /**
+     * Load new image
+     *
+     * @param array
+     * @return void
+     * @author Michael Strohyi
+     **/
+    private function loadNewImage($new_image)
+    {
+        // !!! stub
+        return;
+    }
+
+    /**
+     * Delete image
+     *
+     * @return void
+     * @author Michael Strohyi
+     **/
+    function deleteImage()
+    {
+        /// !!! stub
+        return;
+    }
+
+    /**
+     * Validate user-submitted data.
+     *
+     * @return self
+     * @author Michael Strohyi
+     **/
+    public function validate()
+    {
+        $this->validateLabel();
+        $this->validateCode();
+        $this->validateLink();
+        $this->validateStartDate();
+        $this->validateExpireDate();
+        $this->validateImage();
+
+        return $this;
+    }
+
+    /**
+     * Check if current label has a valid form and not empty
+     *
+     * @return void
+     * @author Michael Strohyi
+     **/
+    private function validateLabel()
+    {
+        unset($this->errors['label']);
+        $label = $this->getLabel();
+
+        # check if label is not empty
+        if (empty($label)) {
+            $this->errors['label'] = self::COUPON_REQUIRED_FIELD;
+            return;
+        }
+
+        # check if a label has only allowed characters (printable only)
+        if (!ctype_print($label)) {
+            $this->errors['label'] = self::COUPON_LABEL_MALFORMED;
+        }
+    }
+
+    /**
+     * Check if current code has a valid form
+     *
+     * @return void
+     * @author Michael Strohyi
+     **/
+    private function validateCode()
+    {
+        unset($this->errors['code']);        
+        $code = $this->getCode();
+
+        # check if code is not empty
+        if (empty($code)) {
+            return;
+        }
+
+        # check if a code has only allowed characters (printable only)
+        if (!ctype_print($code)) {
+            $this->errors['code'] = self::COUPON_CODE_MALFORMED;
+        }
+    }
+
+    /**
+     * Check if current link has a valid form
+     *
+     * @return void
+     * @author Michael Strohyi
+     **/
+    private function validateLink()
+    {
+        unset($this->errors['link']);
+        $link = $this->getLink();
+        
+        # check if link is not empty
+        if (empty($link)) {
+            return;
+        }
+
+        # check if link has a valid form
+        if (!isUrlValid($link)) {
+            $this->errors['link'] = self::COUPON_LINK_NOT_VALID;
+        }
+    }
+
+    /**
+     * Check if current startDate has a valid form
+     *
+     * @return void
+     * @author Michael Strohyi
+     **/
+    private function validateStartDate()
+    {
+        unset($this->errors['startDate']);
+        $startDate = $this->getStartDate();
+        
+        # check if startDate is not empty
+        if (empty($startDate)) {
+            return;
+        }
+
+        # check if startDate has a valid form
+        if (!isDateValid($startDate)) {
+            $this->errors['startDate'] = self::COUPON_DATE_MALFORMED;
+        }
+    }
+
+    /**
+     * Check if current expireDate has a valid form
+     *
+     * @return void
+     * @author Michael Strohyi
+     **/
+    private function validateExpireDate()
+    {
+        unset($this->errors['expireDate']);
+        $expireDate = $this->getExpireDate();
+        
+        # check if expireDate is not empty
+        if (empty($expireDate)) {
+            return;
+        }
+
+        # check if expireDate has a valid form
+        if (!isDateValid($expireDate)) {
+            $this->errors['expireDate'] = self::COUPON_DATE_MALFORMED;
+        }
+    }
+
+    /**
+     * Check if current imagee has a valid form
+     *
+     * @return void
+     * @author Michael Strohyi
+     **/
+    private function validateImage()
+    {
+        // !!! stub
+    }
 }
