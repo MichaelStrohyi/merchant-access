@@ -323,7 +323,7 @@ class Store
     }
 
      /**
-     * Return true if current name has a valid form and not empty
+     * Check if current name has a valid form and not empty
      *
      * @return void
      * @author Michael Strohyi
@@ -390,7 +390,7 @@ class Store
     }
 
     /**
-     * Return true if current email has a valid form and not empty
+     * Check if current email has a valid form and not empty
      *
      * @return void
      * @author Michael Strohyi
@@ -419,7 +419,7 @@ class Store
     }
 
     /**
-     * Return true if current url has a valid form and not empty
+     * Check if current url has a valid form and not empty
      *
      * @return void
      * @author Michael Strohyi
@@ -584,7 +584,7 @@ class Store
     /**
      * Return true if email has the same domain with url
      *
-     * @return void
+     * @return boolean
      * @author Michael Strohyi
      **/
     private function EmailMatchDomain()
@@ -680,7 +680,7 @@ class Store
      * Return true if hash is valid for this $customer, otherwise return false
      *
      * @param string $hash
-     * @return boolenan
+     * @return boolean
      * @author Michael Strohyi
      **/
     public function isHashValid($hash)
@@ -882,7 +882,7 @@ class Store
      * @return void
      * @author Michael Strohyi
      **/
-    public function getCouponsList()
+    private function getCouponsList()
     {
         $id = $this->getId();
 
@@ -900,7 +900,7 @@ class Store
             $coupon = new Coupon($this, $value['id']);
 
             if ($coupon->exists()) {
-                $coupons_array [] = $coupon;
+                $coupons_array [$value['id']] = $coupon;
             }
         }
 
