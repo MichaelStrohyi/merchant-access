@@ -35,6 +35,12 @@ if (isset($buttons_data['buttonCancel'])) {
     exit;
 }
 
+// !!! stub
+$new_image[10] = ['errorString' => 'Some error for 1st image',
+    'hasError' => true,
+    ];
+// !!! endof stub
+
 # if button Save is pressed
 if (isset($buttons_data['buttonSave']))
     {
