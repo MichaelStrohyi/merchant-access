@@ -92,7 +92,7 @@ function clearLoggedCustomer()
 /**
  * Return true if given $url has a valid form.
  *
- * @param  string  $url
+ * @param  string $url
  * @return boolean
  * @author Michael Strohyi
  **/
@@ -142,4 +142,17 @@ function customerCanWork($store)
     }
 
     return true;
+}
+
+/**
+ * Return true if given $date has a valid form.
+ *
+ * @param  string $date
+ * @return boolean
+ * @author Michael Strohyi
+ **/
+function isDateValid($date)
+{
+    // !!! stub
+    return false;
 }
