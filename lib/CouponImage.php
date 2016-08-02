@@ -5,8 +5,8 @@ namespace App;
 class CouponImage extends Image
 {
 
-    const IMAGE_MAX_WIDTH = '100';
-    const IMAGE_MAX_HEIGHT = '100';
+    const IMAGE_MAX_WIDTH = '300';
+    const IMAGE_MAX_HEIGHT = '300';
     const IMAGE_MAX_SIZE = '10240';
     const IMAGE_MIME_PNG = 'image/png';
     const IMAGE_MIME_JPG = 'image/jpg';
@@ -21,6 +21,13 @@ class CouponImage extends Image
      * @var App\Coupon
      **/
     private $coupon;
+
+    /**
+     * Flag to show image must be deleted
+     *
+     * @var boolean
+     **/
+    private $imageDeleted;
 
     public function __construct($coupon, $image_id = null)
     {
@@ -93,5 +100,28 @@ class CouponImage extends Image
     public function getCoupon()
     {
         return $this->coupon;
+    }
+
+    /**
+     * Set flag imageDeleted to true
+     *
+     * @return void
+     * @author Michael Strohyi
+     **/
+    public function markDeleted()
+    {
+        $this->imageDeleted = true;
+        $this->isModified = true;
+    }
+
+    /**
+     * Return imageDeleted
+     *
+     * @return void
+     * @author Michael Strohyi
+     **/
+    public function isDeleted()
+    {
+        return $this->imageDeleted;
     }
 }
