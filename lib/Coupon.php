@@ -7,7 +7,7 @@ class Coupon
     const COUPON_REQUIRED_FIELD = 'This is a required field.';
     const COUPON_LABEL_MALFORMED = 'Label contains deprecated characters. Allowed only printable characters.';
     const COUPON_CODE_MALFORMED = 'Code contains deprecated characters. Allowed only printable characters.';
-    const COUPON_DATE_MALFORMED = 'Date is incorrect.';
+    const COUPON_DATE_MALFORMED = 'Date is incorrect, please use format mm-dd-yyyy.';
     const COUPON_LINK_NOT_VALID = 'Please, enter valid link (with http:// or https://)';
 
 
@@ -95,6 +95,12 @@ class Coupon
      **/
     private $errors;
 
+    /**
+     * New image
+     *
+     * @var string
+     **/
+    private $newImage;
 
     public function __construct($store , $id = null)
     {
@@ -361,8 +367,17 @@ class Coupon
         $this->code = $res_element['code'];
         $this->link = $res_element['link'];
         $this->image = new CouponImage($this, $res_element['image']);
-        $this->startDate = $res_element['startDate'];
-        $this->expireDate = $res_element['expireDate'];
+
+        if (!empty($res_element['startDate'])) {
+            $startDate = explode('-', $res_element['startDate']);
+            $this->startDate = $startDate[1] . '-' . $startDate[2] . '-' . $startDate[0];
+        }
+
+        if (!empty($res_element['expireDate'])) {
+            $expireDate = explode('-', $res_element['expireDate']);
+            $this->expireDate = $expireDate[1] . '-' . $expireDate[2] . '-' . $expireDate[0];
+        }
+
         $this->position = $res_element['position'];
     }
 
@@ -395,40 +410,15 @@ class Coupon
         $this->setExpireDate($info['expireDate']);
         $this->setPosition($info['position']);
 
-        if (!isset($info['removeImage'])) {
-            $this->deleteImage();
+        if (isset($info['removeImage'])) {
+            $this->getImage()->markDeleted();
         }
 
-        if (!empty($info['newImage'])) {
-            loadNewImage($info['newImage']);
+        if (!empty($_FILES['newImage' . $this->getId()]['name']) && $_FILES['newImage' . $this->getId()]['error'] == 0) {
+            $this->setNewImage($_FILES['newImage' . $this->getId()]);
         }
-        
+
         return $this;
-    }
-
-    /**
-     * Load new image
-     *
-     * @param array
-     * @return void
-     * @author Michael Strohyi
-     **/
-    private function loadNewImage($new_image)
-    {
-        // !!! stub
-        return;
-    }
-
-    /**
-     * Delete image
-     *
-     * @return void
-     * @author Michael Strohyi
-     **/
-    function deleteImage()
-    {
-        /// !!! stub
-        return;
     }
 
     /**
@@ -444,7 +434,7 @@ class Coupon
         $this->validateLink();
         $this->validateStartDate();
         $this->validateExpireDate();
-        $this->validateImage();
+        $this->validateNewImage();
 
         return $this;
     }
@@ -480,7 +470,7 @@ class Coupon
      **/
     private function validateCode()
     {
-        unset($this->errors['code']);        
+        unset($this->errors['code']);
         $code = $this->getCode();
 
         # check if code is not empty
@@ -561,13 +551,161 @@ class Coupon
     }
 
     /**
-     * Check if current imagee has a valid form
+     * Check if current newImage has a valid form
      *
      * @return void
      * @author Michael Strohyi
      **/
-    private function validateImage()
+    private function validateNewImage()
     {
-        // !!! stub
+        unset($this->errors['newImage']);
+        $newImageFile = $this->getNewImage();
+
+         # check if newImage is not empty
+        if (empty($newImageFile)) {
+            return;
+        }
+
+        $newImage = new CouponImage($this);
+        
+        # load new image from $file into newImage
+        $newImage->gatherFileInfo($newImageFile);
+        $newImage->validate();
+
+        if (!$newImage->isValid()) {
+            $this->errors['newImage'] = $newImage->getErrorString();
+        }
+
+    }
+
+    /**
+     * Return newImage
+     *
+     * @return string
+     * @author Michael Strohyi
+     **/
+    public function getNewImage()
+    {
+        return $this->newImage;
+    }
+
+    /**
+     * Set newImage to $newImage
+     *
+     * @param string $newImage
+     * @return self
+     * @author Michael Strohyi
+     **/
+    private function setNewImage($newImage)
+    {
+        if ($this->newImage != $newImage) {
+            $this->newImage = $newImage;
+            $this->isModified = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Return true if field with $name has error
+     *
+     * @param string $name
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function hasError($name)
+    {
+        return isset($this->errors[$name]);
+    }
+
+    /**
+     * Return error string for given field $name
+     *
+     * @param string $name
+     * @return string
+     * @author Michael Strohyi
+     **/
+    public function getErrorString($name)
+    {
+        return $this->hasError($name) ? $this->errors[$name] : '';
+    }
+
+    /**
+     * Return true if all fields has valid data, false otherwise.
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function isValid()
+    {
+        return empty($this->errors);
+    }
+
+    /**
+     * Save coupon's data into db and return true. If error happens return false.
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function save()
+    {
+        # check if coupon was modified
+        if (!$this->isModified && !$this->getImage()->getIsModified()) {
+            return true;
+        }
+
+        $image = $this->getImage();
+        $new_image = $this->getNewImage();
+
+        # check if coupon's image was deleted from db if user chose to delete it and new image was not chosen
+        if ($image->isDeleted() && empty($new_image) && !$image->delete()) {
+            return false;
+        }
+
+        # if new image was chosen
+        if (!empty($new_image)) {
+            # load image from file and validate it
+            $image->gatherFileInfo($new_image);
+            $image->validate();
+
+            # if image is not valid or can not be saved into db
+            if (!$image->isValid() || !$image->save()) {
+                return false;
+            }
+        }
+
+        $coupon_data = [
+            'store_id' => $this->getStore()->getId(),
+            'label' => $this->getLabel(),
+            'code' => $this->getCode(),
+            'link' => $this->getLink(),
+            'image' => $this->getImage()->getId(),
+            'startDate' => $this->getStartDate(),
+            'expireDate' => $this->getExpireDate(),
+            'position' => $this->getPosition(),
+            ];
+
+        # if image already exists in db update it, else insert it into db
+        if ($this->exists()) {
+            $query = "UPDATE `coupons` SET " . _QUpdate($coupon_data) . " WHERE `id` = " . $this->getId();
+            $new_id = false;
+        } else {
+            $query = "INSERT INTO `coupons` " . _QInsert($coupon_data);
+            $new_id = true;
+        }
+
+        $res = _QExec($query);
+
+        if ($res === false) {
+            return false;
+        }
+
+        if ($new_id) {
+            $this->id = _QID();
+        }
+
+        $this->isModified = false;
+
+        return true;
     }
 }
