@@ -153,6 +153,5 @@ function customerCanWork($store)
  **/
 function isDateValid($date)
 {
-    // !!! stub
-    return false;
+    return (bool) preg_match( '~^(\d{2})\-(\d{2})-(\d{4})$~', $date, $matches) && checkdate($matches[1], $matches[2], $matches[3]);
 }
