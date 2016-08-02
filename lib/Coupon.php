@@ -567,7 +567,7 @@ class Coupon
         }
 
         $newImage = new CouponImage($this);
-        
+
         # load new image from $file into newImage
         $newImage->gatherFileInfo($newImageFile);
         $newImage->validate();
