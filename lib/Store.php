@@ -883,4 +883,24 @@ class Store
 
         $this->coupons = $coupons_array;
     }
+
+    /**
+     * Save store's coupons into db.
+     * Return true if no errors happened, otherwise return false.
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function saveCoupons()
+    {
+        $no_error = true;
+
+        foreach ($this->getCoupons() as $coupon_id => $value) {
+            if (!$value->save()) {
+                $no_error = false;
+            }
+        }
+
+        return $no_error;
+    }
 }
