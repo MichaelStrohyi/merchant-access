@@ -370,8 +370,10 @@ class Image
         # check if image is new or already is in db and choose neccessary query
         if ($this->exists()) {
             $query = "UPDATE `images` SET " . _QUpdate($image) . " WHERE `id` = " . $this->getId();
+            $new_id = false;
         } else {
             $query = "INSERT INTO `images`  " . _QInsert($image);
+            $new_id = true;
         }
 
         $res = _QExec($query);
@@ -381,7 +383,10 @@ class Image
             return false;
         }
 
-        $this->id = _QID();
+        if ($new_id) {
+            $this->id = _QID();
+        }
+
         $this->isModified = false;
         
         return true;
@@ -516,8 +521,12 @@ class Image
     public function delete()
     {
         $query = "DELETE FROM `images`  WHERE `id` = " . $this->getId(); 
-       
-        return  _QExec($query) != false;
+        if (_QExec($query) == false) {
+            return false;
+        }
+
+        $this->id = null;
+        return  true;
     }
 
     /**
