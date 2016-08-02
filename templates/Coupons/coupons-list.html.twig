@@ -30,19 +30,48 @@
                 <tr style="vertical-align:top; border-bottom: 1px solid #ddd">
                   <td rowspan="2">
                     {{ coupon.position }}
-                    <input type="hidden" id="inputPosition{{ coupon.id }}" class="form-control" name="coupons[{{ coupon.id }}][position]" value="{{ coupon.position }}"
+                    <input type="hidden" id="inputPosition{{ coupon.id }}" class="form-control" name="coupons[{{ coupon.id }}][position]" value="{{ coupon.position }}">
                   </td>
                   <td colspan="4">
-                    <textarea class="form-control" rows="3" name="coupons[{{ coupon.id }}][label]">{{ coupon.label }}</textarea>
-                    <input type="hidden" class="form-control" name="coupons[{{ coupon.id }}][parent_id]" value="{{ coupon.parentId }}">
+                    <div class="form-group {{ coupon.hasError('label') ? 'has-error' : '' }}">
+                      <textarea class="form-control" rows="3" name="coupons[{{ coupon.id }}][label]">{{ coupon.label }}</textarea>
+                      {% if coupon.hasError('label') %}
+                        <span id="helpBlock" class="help-block">{{ coupon.errorString('label') }}</span>
+                      {% endif %}
+                      <input type="hidden" class="form-control" name="coupons[{{ coupon.id }}][parent_id]" value="{{ coupon.parentId }}">
+                    </div>
                   </td>
-                  <td><input class="form-control" type="text" name="coupons[{{ coupon.id }}][code]" value="{{ coupon.code }}"></td>
-                  <td><input class="form-control" type="text" name="coupons[{{ coupon.id }}][link]" value="{{ coupon.link }}"></td>
+                  <td>
+                    <div class="form-group {{ coupon.hasError('code') ? 'has-error' : '' }}">
+                      <input class="form-control" type="text" name="coupons[{{ coupon.id }}][code]" value="{{ coupon.code }}">
+                      {% if  coupon.hasError('code') %}
+                        <span id="helpBlock" class="help-block">{{ coupon.errorString('code') }}</span>
+                      {% endif %}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="form-group {{ coupon.hasError('link') ? 'has-error' : '' }}">
+                      <input class="form-control" type="text" name="coupons[{{ coupon.id }}][link]" value="{{ coupon.link }}">
+                      {% if coupon.hasError('link') %}
+                        <span id="helpBlock" class="help-block">{{ coupon.errorString('link') }}</span>
+                      {% endif %}
+                    </div>
+                  </td>
                   <td>
                     Starts:
-                    <input class="form-control" type="text" name="coupons[{{ coupon.id }}][startDate]" value="{{ coupon.startDate}}">
+                    <div class="form-group {{ coupon.hasError('startDate') ? 'has-error' : '' }}">
+                      <input class="form-control" type="text" name="coupons[{{ coupon.id }}][startDate]" value="{{ coupon.startDate}}">
+                      {% if coupon.hasError('startDate') %}
+                        <span id="helpBlock" class="help-block">{{ coupon.errorString('startDate') }}</span>
+                      {% endif %}
+                    </div>
                     Expires:
-                    <input class="form-control" type="text" name="coupons[{{ coupon.id }}][expireDate]" value="{{ coupon.expireDate }}">
+                    <div class="form-group {{ coupon.hasError('expireDate') ? 'has-error' : '' }}">
+                      <input class="form-control" type="text" name="coupons[{{ coupon.id }}][expireDate]" value="{{ coupon.expireDate }}">
+                      {% if coupon.hasError('expireDate') %}
+                        <span id="helpBlock" class="help-block">{{ coupon.errorString('expireDate') }}</span>
+                      {% endif %}
+                    </div>
                   </td>
                   <td>
                     <a href="#" onclick="" style="font-size: 10pt">First</a></br>
@@ -65,14 +94,14 @@
                     </div>
                   </td>
                   <td colspan="3">
-                    <div class="form-group {{ new_image[coupon.id].hasError ? 'has-error' : '' }}">                  
-                      <input type="file" class="form-control" id="inputImage{{ coupon.id }}" placeholder="Choose image for coupon if needed" name="coupons[{{ coupon.id }}][newImage]"
+                    <div class="form-group {{ coupon.newImage.hasError() ? 'has-error' : '' }}">
+                      <input type="file" class="form-control" id="inputImage{{ coupon.id }}" placeholder="Choose image for coupon if needed" name="newImage{{ coupon.id }}"
                       {% if coupon.image.acceptFilter is not empty %} 
                         accept="{{ store.primaryLogo.acceptFilter }}"
                       {% endif %}
                       >
-                      {% if new_image[coupon.id].hasError %}
-                        <span id="helpBlock" class="help-block">{{ new_image[coupon.id].errorString }}</span>
+                      {% if coupon.newImage.hasError() %}
+                        <span id="helpBlock" class="help-block">{{ coupon.newImage.errorString }}</span>
                       {% endif %}
                       <button type="button" onclick="clearImage('{{ coupon.id }}');">Clear</button>
                     </div>
@@ -106,7 +135,7 @@
     }
 
     window.removeImage = function (coupon_id, image_id) {
-      $("#Image" + coupon_id).replaceWith('<div id="Image' + coupon_id + '"><img height="50px" src="{{ url }}?id=1"><button type="button" onclick="returnImage(' + "'" + coupon_id + "', '" + image_id + "'" + ');">Return Image</button> <input type="hidden" class="form-control" id="removeImage"' + coupon_id + ' name="coupons[' + coupon_id + '][removeImage]></div>');
+      $("#Image" + coupon_id).replaceWith('<div id="Image' + coupon_id + '"><img height="50px" src="{{ url }}?id=1"><button type="button" onclick="returnImage(' + "'" + coupon_id + "', '" + image_id + "'" + ');">Return Image</button><input type="hidden" class="form-control" id="removeImage' + coupon_id + '" name="coupons[' + coupon_id + '][removeImage]"></div>');
     };
 
     window.clearImage = function(coupon_id) {
