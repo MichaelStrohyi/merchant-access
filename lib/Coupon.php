@@ -102,6 +102,13 @@ class Coupon
      **/
     private $newImage;
 
+    /**
+     * Activity
+     *
+     * @var int
+     **/
+    private $activity;
+
     public function __construct($store , $id = null)
     {
         $this->store = $store;
@@ -368,17 +375,23 @@ class Coupon
         $this->link = $res_element['link'];
         $this->image = new CouponImage($this, $res_element['image']);
 
-        if (!empty($res_element['startDate'])) {
-            $startDate = explode('-', $res_element['startDate']);
-            $this->startDate = $startDate[1] . '-' . $startDate[2] . '-' . $startDate[0];
+        $startDate = $res_element['startDate'];
+        if (!empty($startDate)) {
+            $date_array = explode('-', $startDate);
+            $startDate = $date_array[1] . '-' . $date_array[2] . '-' . $date_array[0];
         }
 
-        if (!empty($res_element['expireDate'])) {
-            $expireDate = explode('-', $res_element['expireDate']);
-            $this->expireDate = $expireDate[1] . '-' . $expireDate[2] . '-' . $expireDate[0];
+        $expireDate = $res_element['expireDate'];
+        if (!empty($expireDate)) {
+            $date_array = explode('-', $expireDate);
+            $expireDate = $date_array[1] . '-' . $date_array[2] . '-' . $date_array[0];
         }
+
+        $this->startDate = $startDate;
+        $this->expireDate = $expireDate;
 
         $this->position = $res_element['position'];
+        $this->activity = $res_element['activity'];
     }
 
     /**
@@ -409,6 +422,7 @@ class Coupon
         $this->setStartDate($info['startDate']);
         $this->setExpireDate($info['expireDate']);
         $this->setPosition($info['position']);
+        $this->setActivity($info['activity']);
 
         if (isset($info['removeImage'])) {
             $this->getImage()->markDeleted();
@@ -674,15 +688,28 @@ class Coupon
             }
         }
 
+        $startDate = $this->getStartDate();
+        if (!empty($startDate)) {
+            $date_array = explode('-', $startDate);
+            $startDate = $date_array[2] . '-' . $date_array[0] . '-' . $date_array[1];
+        }
+
+        $expireDate = $this->getExpireDate();
+        if (!empty($expireDate)) {
+            $date_array = explode('-', $expireDate);
+            $expireDate = $date_array[2] . '-' . $date_array[0] . '-' . $date_array[1];
+        }
+
         $coupon_data = [
             'store_id' => $this->getStore()->getId(),
             'label' => $this->getLabel(),
             'code' => $this->getCode(),
             'link' => $this->getLink(),
             'image' => $this->getImage()->getId(),
-            'startDate' => $this->getStartDate(),
-            'expireDate' => $this->getExpireDate(),
+            'startDate' => $startDate,
+            'expireDate' => $expireDate,
             'position' => $this->getPosition(),
+            'activity' => $this->getActivity(),
             ];
 
         # if image already exists in db update it, else insert it into db
@@ -707,5 +734,54 @@ class Coupon
         $this->isModified = false;
 
         return true;
+    }
+
+    /**
+     * Return activity
+     *
+     * @return int
+     * @author Michael Strohyi
+     **/
+    public function getActivity()
+    {
+        return $this->activity;
+    }
+    /**
+     * Set activity to $activity
+     *
+     * @param int $activity
+     * @return self
+     * @author Michael Strohyi
+     **/
+    public function setActivity($activity)
+    {
+        if ($this->activity != $activity) {
+            $this->activity = $activity;
+            $this->isModified = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Delete coupon from db and return true. If some error happened retrn false
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function delete()
+    {
+        if ($this->getImage()->exists() && !$this->getImage()->delete()) {
+            return false;
+        }
+
+        $query = "DELETE FROM `coupons` WHERE `id` = " . $this->getId();
+
+        if (_QExec($query) == false) {
+            return false;
+        }
+
+        $this->id = null;
+        return  true;
     }
 }
