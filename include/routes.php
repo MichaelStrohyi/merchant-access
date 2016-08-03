@@ -85,6 +85,10 @@ function getPath($route_name, $params = [])
             $location = '/send_customer_verification.php?id=' . $customer->getId();
             break;
 
+        case 'coupons_js':
+            $location = '/stores/coupons/coupons.js';
+            break;
+
         default:
             $location = null;
             break;
