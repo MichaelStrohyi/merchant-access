@@ -5,6 +5,9 @@ require_once __DIR__  . '/../../../include/core.php';
 # get store_id from $_POST
 $store_id = filter_input(INPUT_POST, 'store_id');
 
+# get removed_coupons from $_POST
+$removed_coupons = filter_input(INPUT_POST, 'rCoupons');
+
 # if $store_id is not set get it from $_GET
 if (!isset($store_id_post)) {
     # get variables from $_GET
@@ -51,6 +54,23 @@ if (isset($buttons_data['buttonSave']))
     }
 
     if ($no_error) {
+        # delete removed coupons
+        if (!empty($removed_coupons) && !$store->deleteRemovedCoupons(explode(',', $removed_coupons))) {
+            # if removed coupon was not deleted from db
+            if (!(defined('ENVIRONMENT') && ENVIRONMENT == 'development')) {
+                $message = 'Some arror happens. Please, try again later.';
+            } else {
+                $message = '<table border=3><tr><td bgcolor="yellow">Error happens trying to delete removed coupons</tr></td></table>';
+            }
+
+            # display error page
+            echo $twig->render('Signup/db-access-error.html.twig', [
+                'customer' => $store->getCustomer(),
+                'message' => $message,
+                ]);
+            exit;
+        }
+
         # save coupons into db
         if (!$store->saveCoupons()) {
             # if logo was not deleted create error message depending on working mode
@@ -79,4 +99,5 @@ echo $twig->render('Coupons/coupons-list.html.twig', [
     'store' => $store,
     'url' => getPath('image'),
     'message' => $message,
+    'coupons_js' => getPath('coupons_js'),
     ]);
