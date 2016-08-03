@@ -868,7 +868,7 @@ class Store
             return;
         }
 
-        $query = "SELECT * FROM `coupons` WHERE `store_id` = $id";
+        $query = "SELECT * FROM `coupons` WHERE `store_id` = $id ORDER BY `position`";
         _QExec($query);
         $res_assoc = _QAssoc();
         $coupons_array = [];
@@ -902,5 +902,30 @@ class Store
         }
 
         return $no_error;
+    }
+
+    /**
+     * Get array of removed coupon's ids, remove these coupons and return true.
+     * If some error happened return false.
+     *
+     * @param array $removed_coupons
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function deleteRemovedCoupons($removed_coupons)
+    {
+        $coupons = $this->getCoupons();
+
+        foreach ($removed_coupons as $key => $value) {
+            # check if coupon was deleted from db
+            if (!$coupons[$value]->delete()) {
+                return false;
+            }
+            # remove deleted coupon from coupns list
+            unset($coupons[$value]);
+        }
+
+        $this->coupons = $coupons;
+        return true;
     }
 }
