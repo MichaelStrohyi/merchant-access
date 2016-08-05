@@ -901,6 +901,7 @@ class Store
             }
         }
 
+        $this->getCouponsList();
         return $no_error;
     }
 
