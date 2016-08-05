@@ -10,7 +10,7 @@
         </header>
          <form class="form-horizontal" id="mainForm" method="post" name="coupons_form" enctype="multipart/form-data">
           <div id="coupons-table">
-            <table class="table-responsive">
+            <table class="table-responsive" id="couponsTable">
               <thead>
                 <tr style="border-bottom: 3px solid #ddd">
                   <th style="width: 2%"></th>
@@ -28,12 +28,12 @@
               {% endif %}
               {% for coupon in store.coupons %}
                 <tr style="vertical-align:top; border-bottom: 1px solid #ddd {{ coupon.activity == 0 ? '; background-color: #ddd ' : ''}}" id="tr{{ coupon.id }}_1">
-                  <td rowspan="2" class="couponPosition">{{ coupon.position }}</td>
+                  <td rowspan="2">{{ coupon.position }}</td>
                   <td colspan="4">
-                    <input type="hidden" id="inputPosition{{ coupon.position }}" class="form-control" name="coupons[{{ coupon.id }}][position]" value="{{ coupon.position }}">
+                    <input type="hidden" id="inputPosition{{ coupon.id }}" class="inputPosition" name="coupons[{{ coupon.id }}][position]" title="{{ coupon.id }}" value="{{ coupon.position }}">
                     <input type="hidden" id="inputActivity{{ coupon.id }}" class="form-control" name="coupons[{{ coupon.id }}][activity]" value="{{ coupon.activity }}">
-                    <div class="form-group {{ coupon.hasError('label') ? 'has-error' : '' }}">
-                      <textarea class="form-control" rows="3" name="coupons[{{ coupon.id }}][label]">{{ coupon.label }}</textarea>
+                    <div{{ coupon.hasError('label') ? ' class="has-error"' : '' }}>
+                      <textarea class="form-control" name="coupons[{{ coupon.id }}][label]" rows="3">{{ coupon.label }}</textarea>
                       {% if coupon.hasError('label') %}
                         <span id="helpBlock" class="help-block">{{ coupon.errorString('label') }}</span>
                       {% endif %}
@@ -41,7 +41,7 @@
                     </div>
                   </td>
                   <td>
-                    <div class="form-group {{ coupon.hasError('code') ? 'has-error' : '' }}">
+                    <div{{ coupon.hasError('code') ? ' class="has-error"' : '' }}>
                       <input class="form-control" type="text" name="coupons[{{ coupon.id }}][code]" value="{{ coupon.code }}">
                       {% if  coupon.hasError('code') %}
                         <span id="helpBlock" class="help-block">{{ coupon.errorString('code') }}</span>
@@ -49,7 +49,7 @@
                     </div>
                   </td>
                   <td>
-                    <div class="form-group {{ coupon.hasError('link') ? 'has-error' : '' }}">
+                    <div{{ coupon.hasError('link') ? ' class="has-error"' : '' }}>
                       <input class="form-control" type="text" name="coupons[{{ coupon.id }}][link]" value="{{ coupon.link }}">
                       {% if coupon.hasError('link') %}
                         <span id="helpBlock" class="help-block">{{ coupon.errorString('link') }}</span>
@@ -58,14 +58,14 @@
                   </td>
                   <td>
                     Starts:
-                    <div class="form-group {{ coupon.hasError('startDate') ? 'has-error' : '' }}">
+                    <div{{ coupon.hasError('startDate') ? ' class="has-error"' : '' }}>
                       <input class="form-control" type="text" name="coupons[{{ coupon.id }}][startDate]" value="{{ coupon.startDate}}">
                       {% if coupon.hasError('startDate') %}
                         <span id="helpBlock" class="help-block">{{ coupon.errorString('startDate') }}</span>
                       {% endif %}
                     </div>
                     Expires:
-                    <div class="form-group {{ coupon.hasError('expireDate') ? 'has-error' : '' }}">
+                    <div{{ coupon.hasError('expireDate') ? ' class="has-error"' : '' }}>
                       <input class="form-control" type="text" name="coupons[{{ coupon.id }}][expireDate]" value="{{ coupon.expireDate }}">
                       {% if coupon.hasError('expireDate') %}
                         <span id="helpBlock" class="help-block">{{ coupon.errorString('expireDate') }}</span>
@@ -73,13 +73,11 @@
                     </div>
                   </td>
                   <td>
-                      <a href="#" onclick="" style="font-size: 10pt">First</a></br>
-                      <a href="#" onclick="" style="font-size: 10pt">Last</a></br>
-                      <a href="#" onclick="" style="font-size: 10pt">Up</a></br>
-                      <a href="#" onclick="" style="font-size: 10pt">Down</a></br>
-                      <div id="activation{{ coupon.id }}">
-                        <a href="javascript:changeActivity('{{ coupon.id }}');" style="font-size: 10pt" id="activationLink{{ coupon.id }}">{{ coupon.activity == 0 ? 'Activate' : 'Deactivate'}}</a>
-                      </div>
+                      <a href="javascript:makeFirst('{{ coupon.id }}')" style="font-size: 10pt">First</a></br>
+                      <a href="javascript:makeLast('{{ coupon.id }}')" style="font-size: 10pt">Last</a></br>
+                      <a href="javascript:moveUp('{{ coupon.id }}')" style="font-size: 10pt">Up</a></br>
+                      <a href="javascript:moveDown('{{ coupon.id }}')" style="font-size: 10pt">Down</a></br>
+                      <a href="javascript:changeActivity('{{ coupon.id }}');" style="font-size: 10pt" id="activationLink{{ coupon.id }}">{{ coupon.activity == 0 ? 'Activate' : 'Deactivate'}}</a><br>
                       <a href="javascript:removeCoupon('{{ coupon.id }}');" style="font-size: 10pt">Remove</a>
                   </td>
                 </tr>
@@ -95,7 +93,7 @@
                     </div>
                   </td>
                   <td colspan="3">
-                    <div class="form-group {{ coupon.newImage.hasError() ? 'has-error' : '' }}">
+                    <div{{ coupon.newImage.hasError() ? ' class="has-error"' : '' }}>
                       <input type="file" class="form-control" id="inputImage{{ coupon.id }}" placeholder="Choose image for coupon if needed" name="newImage{{ coupon.id }}"
                       {% if coupon.image.acceptFilter is not empty %} 
                         accept="{{ store.primaryLogo.acceptFilter }}"
