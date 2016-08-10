@@ -22,27 +22,28 @@
                 </tr>
               </thead>
               {% if store.coupons is empty %}
-              <tr>
+              <tr id="no_coupons">
                 <td colspan="9" style="text-align: center">No coupons for this store</td>
               </tr>
               {% endif %}
               {% for coupon in store.coupons %}
-                <tr style="vertical-align:top; border-bottom: 1px solid #ddd {{ coupon.activity == 0 ? '; background-color: #ddd ' : ''}}" id="tr{{ coupon.id }}_1">
+                {% set coupon_id = coupon.id is empty ? coupon.tempId : coupon.id %}
+                <tr style="vertical-align:top; border-bottom: 1px solid #ddd {{ coupon.activity == 0 ? '; background-color: #ddd ' : coupon.tempId is empty ? '' : '; background-color: #E0FFFF'}}" id="tr{{ coupon_id }}_1">
                   <td rowspan="2">{{ coupon.position }}</td>
                   <td colspan="4">
-                    <input type="hidden" id="inputPosition{{ coupon.id }}" class="inputPosition" name="coupons[{{ coupon.id }}][position]" title="{{ coupon.id }}" value="{{ coupon.position }}">
-                    <input type="hidden" id="inputActivity{{ coupon.id }}" class="form-control" name="coupons[{{ coupon.id }}][activity]" value="{{ coupon.activity }}">
+                    <input type="hidden" id="inputPosition{{ coupon_id }}" class="inputPosition" name="coupons[{{ coupon_id }}][position]" title="{{ coupon_id }}" value="{{ coupon.position }}">
+                    <input type="hidden" id="inputActivity{{ coupon_id }}" class="form-control" name="coupons[{{ coupon_id }}][activity]" value="{{ coupon.activity }}">
                     <div{{ coupon.hasError('label') ? ' class="has-error"' : '' }}>
-                      <textarea class="form-control" name="coupons[{{ coupon.id }}][label]" rows="3">{{ coupon.label }}</textarea>
+                      <textarea class="form-control" name="coupons[{{ coupon_id }}][label]" rows="3">{{ coupon.label }}</textarea>
                       {% if coupon.hasError('label') %}
                         <span id="helpBlock" class="help-block">{{ coupon.errorString('label') }}</span>
                       {% endif %}
-                      <input type="hidden" class="form-control" name="coupons[{{ coupon.id }}][parent_id]" value="{{ coupon.parentId }}">
+                      <input type="hidden" class="form-control" name="coupons[{{ coupon_id }}][parent_id]" value="{{ coupon.parentId }}">
                     </div>
                   </td>
                   <td>
                     <div{{ coupon.hasError('code') ? ' class="has-error"' : '' }}>
-                      <input class="form-control" type="text" name="coupons[{{ coupon.id }}][code]" value="{{ coupon.code }}">
+                      <input class="form-control" type="text" name="coupons[{{ coupon_id }}][code]" value="{{ coupon.code }}">
                       {% if  coupon.hasError('code') %}
                         <span id="helpBlock" class="help-block">{{ coupon.errorString('code') }}</span>
                       {% endif %}
@@ -50,7 +51,7 @@
                   </td>
                   <td>
                     <div{{ coupon.hasError('link') ? ' class="has-error"' : '' }}>
-                      <input class="form-control" type="text" name="coupons[{{ coupon.id }}][link]" value="{{ coupon.link }}">
+                      <input class="form-control" type="text" name="coupons[{{ coupon_id }}][link]" value="{{ coupon.link }}">
                       {% if coupon.hasError('link') %}
                         <span id="helpBlock" class="help-block">{{ coupon.errorString('link') }}</span>
                       {% endif %}
@@ -59,34 +60,34 @@
                   <td>
                     Starts:
                     <div{{ coupon.hasError('startDate') ? ' class="has-error"' : '' }}>
-                      <input class="form-control" type="text" name="coupons[{{ coupon.id }}][startDate]" value="{{ coupon.startDate}}">
+                      <input class="form-control" type="text" name="coupons[{{ coupon_id }}][startDate]" value="{{ coupon.startDate}}">
                       {% if coupon.hasError('startDate') %}
                         <span id="helpBlock" class="help-block">{{ coupon.errorString('startDate') }}</span>
                       {% endif %}
                     </div>
                     Expires:
                     <div{{ coupon.hasError('expireDate') ? ' class="has-error"' : '' }}>
-                      <input class="form-control" type="text" name="coupons[{{ coupon.id }}][expireDate]" value="{{ coupon.expireDate }}">
+                      <input class="form-control" type="text" name="coupons[{{ coupon_id }}][expireDate]" value="{{ coupon.expireDate }}">
                       {% if coupon.hasError('expireDate') %}
                         <span id="helpBlock" class="help-block">{{ coupon.errorString('expireDate') }}</span>
                       {% endif %}
                     </div>
                   </td>
                   <td>
-                      <a href="javascript:makeFirst('{{ coupon.id }}')" style="font-size: 10pt">First</a></br>
-                      <a href="javascript:makeLast('{{ coupon.id }}')" style="font-size: 10pt">Last</a></br>
-                      <a href="javascript:moveUp('{{ coupon.id }}')" style="font-size: 10pt">Up</a></br>
-                      <a href="javascript:moveDown('{{ coupon.id }}')" style="font-size: 10pt">Down</a></br>
-                      <a href="javascript:changeActivity('{{ coupon.id }}');" style="font-size: 10pt" id="activationLink{{ coupon.id }}">{{ coupon.activity == 0 ? 'Activate' : 'Deactivate'}}</a><br>
-                      <a href="javascript:removeCoupon('{{ coupon.id }}');" style="font-size: 10pt">Remove</a>
+                      <a href="javascript:makeFirst('{{ coupon_id }}')" style="font-size: 10pt">First</a></br>
+                      <a href="javascript:makeLast('{{ coupon_id }}')" style="font-size: 10pt">Last</a></br>
+                      <a href="javascript:moveUp('{{ coupon_id }}')" style="font-size: 10pt">Up</a></br>
+                      <a href="javascript:moveDown('{{ coupon_id }}')" style="font-size: 10pt">Down</a></br>
+                      <a href="javascript:changeActivity('{{ coupon_id }}');" style="font-size: 10pt" id="activationLink{{ coupon_id }}">{{ coupon.activity == 0 ? 'Activate' : 'Deactivate'}}</a><br>
+                      <a href="javascript:removeCoupon('{{ coupon_id }}');" style="font-size: 10pt">Remove</a>
                   </td>
                 </tr>
-                <tr style="vertical-align:top; border-bottom: 3px solid #ddd {{ (coupon.activity == 0) ? '; background-color: #ddd ' : ''}}"  id="tr{{ coupon.id }}_2">
+                <tr style="vertical-align:top; border-bottom: 3px solid #ddd {{ (coupon.activity == 0) ? '; background-color: #ddd ' : ''}}"  id="tr{{ coupon_id }}_2">
                   <td>
-                    <div id="Image{{ coupon.id }}">  
+                    <div id="Image{{ coupon_id }}">  
                       {% if coupon.image.exists %}        
                         <img height="50px" src="{{ url }}?id={{ coupon.image.id }}" onclick="openImageWindow(this.src);">
-                        <button type="button" onclick="removeImage('{{ coupon.id }}', '{{ coupon.image.id }}', '{{ url }}');">Remove</button>
+                        <button type="button" onclick="removeImage('{{ coupon_id }}', '{{ coupon.image.id }}', '{{ url }}');">Remove</button>
                       {% else %}
                         <img height="50px" src="{{ url }}?id=1">
                       {% endif %}
@@ -94,7 +95,7 @@
                   </td>
                   <td colspan="3">
                     <div{{ coupon.newImage.hasError() ? ' class="has-error"' : '' }}>
-                      <input type="file" class="form-control" id="inputImage{{ coupon.id }}" placeholder="Choose image for coupon if needed" name="newImage{{ coupon.id }}"
+                      <input type="file" class="form-control" id="inputImage{{ coupon_id }}" placeholder="Choose image for coupon if needed" name="newImage{{ coupon_id }}"
                       {% if coupon.image.acceptFilter is not empty %} 
                         accept="{{ store.primaryLogo.acceptFilter }}"
                       {% endif %}
@@ -102,14 +103,14 @@
                       {% if coupon.newImage.hasError() %}
                         <span id="helpBlock" class="help-block">{{ coupon.newImage.errorString }}</span>
                       {% endif %}
-                      <button type="button" onclick="clearImage('{{ coupon.id }}');">Clear</button>
+                      <button type="button" onclick="clearImage('{{ coupon_id }}');">Clear</button>
                     </div>
                   </td>
                   <td colspan="5"></td>
                 </tr>
               {% endfor %}
             </table>
-            <a href="#">Add new coupon</a>
+            <a href="javascript:addCoupon()">Add new coupon</a>
             <div>
               <input type="hidden" class="form-control" name="store_id" value="{{ store.id }}">
               <input type="hidden" class="form-control" name="rCoupons"  id ="rCoupons" value="">
@@ -126,9 +127,12 @@
 {% block javascripts %}
   {{ parent() }}
   <script src="{{ coupons_js }}"></script>
-  {% if message == 'saved' %}
   <script type="text/javascript">
-    alert('Store {{ store.name }} coupons updated successfully')
-  </script>
+    var nc_count = 0;
+    var url = '{{ url }}';
+    var accept_filter = '{{ store.primaryLogo.acceptFilter }}';
+  {% if message == 'saved' %}
+    alert('Store {{ store.name }} coupons updated successfully');
   {% endif %}
+  </script>
 {% endblock %}
