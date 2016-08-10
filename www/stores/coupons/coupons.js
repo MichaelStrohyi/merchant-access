@@ -27,23 +27,23 @@ window.changeActivity = function (coupon_id) {
     $("#inputActivity" + coupon_id).val('0');
     // change link text to "Activate"
     $("#activationLink" + coupon_id).text('Activate');
-    // change coupon background color
-    $("#tr" + coupon_id + "_1").css("background-color", '#ddd');
-    $("#tr" + coupon_id + "_2").css("background-color", '#ddd');
+    // setcoupon's class to change background color'
+    $("#tr" + coupon_id + "_1").attr("class", "tr1-body deactivated");
+    $("#tr" + coupon_id + "_2").attr("class", "tr2-body deactivated");
 
     return;
   }
 
-  var bgcolor = "";
-  // if coupon is new set it's own background color
-  if (coupon_id.indexOf('nc') > -1) {var bgcolor = '#E0FFFF';}
+  var new_coupon = "";
+  // if coupon is new set it's own class
+  if (coupon_id.indexOf('nc') > -1) {var new_coupon = ' newCoupon';}
   // set coupon activity into "active"
   $("#inputActivity" + coupon_id).val('1');
   // change link text to "Deactivate"
   $("#activationLink" + coupon_id).text('Deactivate');
-  // change coupon background color
-  $("#tr" + coupon_id + "_1").css("background-color", bgcolor);
-  $("#tr" + coupon_id + "_2").css("background-color", bgcolor);
+    // setcoupon's class to change background color'
+  $("#tr" + coupon_id + "_1").attr("class", "tr2-body" + new_coupon);
+  $("#tr" + coupon_id + "_2").attr("class", "tr2-body" + new_coupon);
 };
 
 window.pageReset = function () { document.location.reload();}
@@ -164,7 +164,7 @@ window.addCoupon = function () {
   // create id for new coupon
   var coupon_id = 'nc' + nc_count;
   // create html-code of rows for new coupon
-  var new_row = '<tr style="vertical-align:top; border-bottom: 1px solid #ddd; background-color: #E0FFFF " id="tr' + coupon_id + '_1"> ';
+  var new_row = '<tr class="tr1-body newCoupon" id="tr' + coupon_id + '_1"> ';
   new_row += '<td rowspan="2">' + position + '</td> ';
   new_row += '<td colspan="4"> ';
   new_row += '<input type="hidden" id="inputPosition' + coupon_id + '" class="inputPosition" name="coupons[' + coupon_id + '][position]" title="' + coupon_id + '" value="' + position + '"> ';
@@ -195,15 +195,15 @@ window.addCoupon = function () {
   new_row += '</div> ';
   new_row += '</td> ';
   new_row += '<td> ';
-  new_row += '<a href="javascript:makeFirst(' + "'" + coupon_id + "'" + ')" style="font-size: 10pt">First</a></br> ';
-  new_row += '<a href="javascript:makeLast(' + "'" + coupon_id + "'" + ')" style="font-size: 10pt">Last</a></br> ';
-  new_row += '<a href="javascript:moveUp(' + "'" + coupon_id + "'" + ')" style="font-size: 10pt">Up</a></br> ';
-  new_row += '<a href="javascript:moveDown(' + "'" + coupon_id + "'" + ')" style="font-size: 10pt">Down</a></br> ';
-  new_row += '<a href="javascript:changeActivity(' + "'" + coupon_id + "'" + ');" style="font-size: 10pt" id="activationLink' + coupon_id + '">Deactivate</a><br> ';
-  new_row += '<a href="javascript:removeCoupon(' + "'" + coupon_id + "'" + ');" style="font-size: 10pt">Remove</a> ';
+  new_row += '<a href="javascript:makeFirst(' + "'" + coupon_id + "'" + ')" class="couponActions">First</a></br> ';
+  new_row += '<a href="javascript:makeLast(' + "'" + coupon_id + "'" + ')" class="couponActions">Last</a></br> ';
+  new_row += '<a href="javascript:moveUp(' + "'" + coupon_id + "'" + ')" class="couponActions">Up</a></br> ';
+  new_row += '<a href="javascript:moveDown(' + "'" + coupon_id + "'" + ')" class="couponActions">Down</a></br> ';
+  new_row += '<a href="javascript:changeActivity(' + "'" + coupon_id + "'" + ');" class="couponActions" id="activationLink' + coupon_id + '">Deactivate</a><br> ';
+  new_row += '<a href="javascript:removeCoupon(' + "'" + coupon_id + "'" + ');" class="couponActions">Remove</a> ';
   new_row += '</td> ';
   new_row += '</tr> ';
-  new_row += '<tr style="vertical-align:top; border-bottom: 3px solid #ddd; background-color: #E0FFFF"  id="tr' + coupon_id + '_2"> ';
+  new_row += '<tr class="tr2-body newCoupon"  id="tr' + coupon_id + '_2"> ';
   new_row += '<td> ';
   new_row += '<div id="Image' + coupon_id + '">   ';
   new_row += '<img height="50px" src="' + url + '?id=1"> ';

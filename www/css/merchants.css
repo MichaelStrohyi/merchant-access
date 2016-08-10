@@ -1,0 +1,57 @@
+.tr-head {
+    border-bottom: 3px solid #ddd;
+    }
+
+.tr1-body {
+    vertical-align:top; 
+    border-bottom: 1px solid #ddd;
+}
+
+.deactivated {
+    background-color: #ddd;
+}
+
+.newCoupon {
+    background-color: #E0FFFF;
+}
+
+.couponActions {
+    font-size: 10pt;
+}
+
+.tr2-body {
+    vertical-align:top; 
+    border-bottom: 3px solid #ddd;
+}
+
+.centered {
+    text-align: center;
+}
+
+.col1{
+    width: 2%;
+}
+
+.col2{
+    width: 50%;
+}
+
+.col3{
+    width: 10%;
+}
+
+.col4{
+    width: 20%;
+}
+
+.col5{
+    width: 9%;
+}
+
+.col6{
+    width: 9%;
+}
+
+.couponImage {
+    height: 50px;
+}

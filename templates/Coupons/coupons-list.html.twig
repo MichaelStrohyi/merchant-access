@@ -5,30 +5,30 @@
 {% block body %}
     <div class="container">
       <div id="coupons-form">
-        <header align="center">
+        <header class='centered'>
           <h3>Store {{ store.name }} coupons</h3>
         </header>
          <form class="form-horizontal" id="mainForm" method="post" name="coupons_form" enctype="multipart/form-data">
           <div id="coupons-table">
             <table class="table-responsive" id="couponsTable">
               <thead>
-                <tr style="border-bottom: 3px solid #ddd">
-                  <th style="width: 2%"></th>
-                  <th colspan="4" style="width: 50%">Description</th>
-                  <th style="width: 10%">Code</th>
-                  <th style="width: 20%">Url</th>
-                  <th style="width: 9%">Date</th>
-                  <th style="width: 9%">Actions</th>              
+                <tr class="tr-head">
+                  <th class="col1"></th>
+                  <th colspan="4" class="col2">Description</th>
+                  <th class="col3">Code</th>
+                  <th class="col4">Url</th>
+                  <th class="col5">Date</th>
+                  <th class="col6">Actions</th>
                 </tr>
               </thead>
               {% if store.coupons is empty %}
               <tr id="no_coupons">
-                <td colspan="9" style="text-align: center">No coupons for this store</td>
+                <td colspan="9" class="centered">No coupons for this store</td>
               </tr>
               {% endif %}
               {% for coupon in store.coupons %}
                 {% set coupon_id = coupon.id is empty ? coupon.tempId : coupon.id %}
-                <tr style="vertical-align:top; border-bottom: 1px solid #ddd {{ coupon.activity == 0 ? '; background-color: #ddd ' : coupon.tempId is empty ? '' : '; background-color: #E0FFFF'}}" id="tr{{ coupon_id }}_1">
+                <tr class="tr1-body{{ coupon.activity == 0 ? ' deactivated' : coupon.tempId is empty ? '' : ' newCoupon'}}" id="tr{{ coupon_id }}_1">
                   <td rowspan="2">{{ coupon.position }}</td>
                   <td colspan="4">
                     <input type="hidden" id="inputPosition{{ coupon_id }}" class="inputPosition" name="coupons[{{ coupon_id }}][position]" title="{{ coupon_id }}" value="{{ coupon.position }}">
@@ -74,22 +74,22 @@
                     </div>
                   </td>
                   <td>
-                      <a href="javascript:makeFirst('{{ coupon_id }}')" style="font-size: 10pt">First</a></br>
-                      <a href="javascript:makeLast('{{ coupon_id }}')" style="font-size: 10pt">Last</a></br>
-                      <a href="javascript:moveUp('{{ coupon_id }}')" style="font-size: 10pt">Up</a></br>
-                      <a href="javascript:moveDown('{{ coupon_id }}')" style="font-size: 10pt">Down</a></br>
-                      <a href="javascript:changeActivity('{{ coupon_id }}');" style="font-size: 10pt" id="activationLink{{ coupon_id }}">{{ coupon.activity == 0 ? 'Activate' : 'Deactivate'}}</a><br>
-                      <a href="javascript:removeCoupon('{{ coupon_id }}');" style="font-size: 10pt">Remove</a>
+                      <a href="javascript:makeFirst('{{ coupon_id }}')" class="couponActions">First</a></br>
+                      <a href="javascript:makeLast('{{ coupon_id }}')" class="couponActions">Last</a></br>
+                      <a href="javascript:moveUp('{{ coupon_id }}')" class="couponActions">Up</a></br>
+                      <a href="javascript:moveDown('{{ coupon_id }}')" class="couponActions">Down</a></br>
+                      <a href="javascript:changeActivity('{{ coupon_id }}');" class="couponActions" id="activationLink{{ coupon_id }}">{{ coupon.activity == 0 ? 'Activate' : 'Deactivate'}}</a><br>
+                      <a href="javascript:removeCoupon('{{ coupon_id }}');" class="couponActions">Remove</a>
                   </td>
                 </tr>
-                <tr style="vertical-align:top; border-bottom: 3px solid #ddd {{ (coupon.activity == 0) ? '; background-color: #ddd ' : ''}}"  id="tr{{ coupon_id }}_2">
+                <tr class="tr2-body{{ coupon.activity == 0 ? ' deactivated' : coupon.tempId is empty ? '' : ' newCoupon'}}" id="tr{{ coupon_id }}_2">
                   <td>
                     <div id="Image{{ coupon_id }}">  
                       {% if coupon.image.exists %}        
-                        <img height="50px" src="{{ url }}?id={{ coupon.image.id }}" onclick="openImageWindow(this.src);">
+                        <img class="couponImage" src="{{ url }}?id={{ coupon.image.id }}" onclick="openImageWindow(this.src);">
                         <button type="button" onclick="removeImage('{{ coupon_id }}', '{{ coupon.image.id }}', '{{ url }}');">Remove</button>
                       {% else %}
-                        <img height="50px" src="{{ url }}?id=1">
+                        <img class="couponImage" src="{{ url }}?id=1">
                       {% endif %}
                     </div>
                   </td>
