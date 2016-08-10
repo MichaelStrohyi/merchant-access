@@ -109,9 +109,17 @@ class Coupon
      **/
     private $activity;
 
+    /**
+     * Temp id for new coupons
+     *
+     * @var string
+     **/
+    private $tempId;
+
     public function __construct($store , $id = null)
     {
         $this->store = $store;
+        $this->image = new CouponImage($this);
 
         $this->loadCouponData($id);
     }
@@ -402,7 +410,7 @@ class Coupon
      **/
     public function exists()
     {
-        $id =  $this->id;
+        $id =  $this->getId();
         return !empty($id);
     }
 
@@ -428,8 +436,13 @@ class Coupon
             $this->getImage()->markDeleted();
         }
 
-        if (!empty($_FILES['newImage' . $this->getId()]['name']) && $_FILES['newImage' . $this->getId()]['error'] == 0) {
-            $this->setNewImage($_FILES['newImage' . $this->getId()]);
+        $id = $this->getId();
+        if (empty($id)) {
+            $id = $this->getTempId();
+        }
+
+        if (!empty($_FILES['newImage' . $id]['name']) && $_FILES['newImage' . $id]['error'] == 0) {
+            $this->setNewImage($_FILES['newImage' . $id]);
         }
 
         return $this;
@@ -729,6 +742,7 @@ class Coupon
 
         if ($new_id) {
             $this->id = _QID();
+            $this->tempId = null;
         }
 
         $this->isModified = false;
@@ -771,6 +785,12 @@ class Coupon
      **/
     public function delete()
     {
+        $tempId = $this->getTempId();
+        if (!empty($tempId)) {
+            $this->tempId = null;
+            return true;
+        }
+
         if ($this->getImage()->exists() && !$this->getImage()->delete()) {
             return false;
         }
@@ -784,4 +804,30 @@ class Coupon
         $this->id = null;
         return  true;
     }
+
+
+    /**
+     * Set tempId to $temp_id
+     *
+     * @param string $temp_id
+     * @return self
+     * @author Michael Strohyi
+     **/
+    public function setTempId($temp_id)
+    {
+        $this->tempId = $temp_id;
+        return $this;
+    }
+
+    /**
+     * Return tempId
+     *
+     * @return string
+     * @author Michael Strohyi
+     **/
+    public function getTempId()
+    {
+        return $this->tempId;
+    }
+
 }

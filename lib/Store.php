@@ -922,11 +922,61 @@ class Store
             if (!$coupons[$value]->delete()) {
                 return false;
             }
-            # remove deleted coupon from coupns list
+            # remove deleted coupon from coupons list
             unset($coupons[$value]);
         }
 
         $this->coupons = $coupons;
         return true;
+    }
+
+    /**
+     * Add new coupon into coupons array
+     *
+     * @param string $coupon_id
+     * @return self
+     * @author Michael Strohyi
+     **/
+    public function addNewCoupon($coupon_id)
+    {
+        $new_coupon = new Coupon($this);
+        $new_coupon->setTempId($coupon_id);
+        $this->coupons[$coupon_id] = $new_coupon;
+        return $this;
+    }
+
+    /**
+     * Sort coupons array according to coupon's position
+     *
+     * @param array $coupons_position
+     * @return void
+     * @author Michael Strohyi
+     **/
+    public function cortCoupons($coupons_position)
+    {
+        if (empty($coupons_position)) {
+            return;
+        }
+
+        # initialize new coupons array
+        $sorted_coupons = [];
+        # get current coupons array
+        $coupons = $this->getCoupons();
+
+        # go over coupons position array
+        foreach ($coupons_position as $key => $value) {
+            # add into new coupons array coupon from old coupons array according to current id from $coupons_position
+            $sorted_coupons[$value] = $coupons[$value];
+        }
+
+        # go over old coupons array
+        foreach ($coupons as $key => $value) {
+            # add into new coupons array current coupon if it does not exist in this array
+           if (!in_array($key, $coupons_position)){
+            $sorted[$key] = $coupons[$key];
+           }
+        }
+
+        $this->coupons = $sorted_coupons;
     }
 }
