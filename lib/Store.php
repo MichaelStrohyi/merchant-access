@@ -952,7 +952,7 @@ class Store
      * @return void
      * @author Michael Strohyi
      **/
-    public function cortCoupons($coupons_position)
+    public function sortCoupons($coupons_position)
     {
         if (empty($coupons_position)) {
             return;
@@ -973,7 +973,7 @@ class Store
         foreach ($coupons as $key => $value) {
             # add into new coupons array current coupon if it does not exist in this array
            if (!in_array($key, $coupons_position)){
-            $sorted[$key] = $coupons[$key];
+            $sorted_coupons[$key] = $coupons[$key];
            }
         }
 
