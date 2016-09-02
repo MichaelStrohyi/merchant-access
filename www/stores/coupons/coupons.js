@@ -1,23 +1,18 @@
-window.openImageWindow = function (src) {
-  var image = new Image();
-  image.src = src;
-  // get image width and height
-  var width = image.width;
-  var height = image.height;
+window.openImageWindow = function (src, width, height) {
   // open image in new window (window size = image size)
   window.open(src,"Image","width=" + width + ",height=" + height);
-}
+};
 
-window.removeImage = function (coupon_id, image_id, url) {
-  $("#Image" + coupon_id).replaceWith('<div id="Image' + coupon_id + '"><img height="50px" src="' + url + '?id=1"><button type="button" onclick="returnImage(' + "'" + coupon_id + "', '" + image_id + "', '" + url + "'" + ');">Return Image</button><input type="hidden" class="form-control" id="removeImage' + coupon_id + '" name="coupons[' + coupon_id + '][removeImage]"></div>');
+window.removeImage = function (coupon_id, image_id, url, width, height) {
+  $("#Image" + coupon_id).replaceWith('<div id="Image' + coupon_id + '"><img class="couponImage" src="' + url + '?id=1"><button type="button" onclick="returnImage(' + "'" + coupon_id + "', '" + image_id + "', '" + url + "', '" + width + "', '" + height + "'" + ');">Return Image</button><input type="hidden" class="form-control" id="removeImage' + coupon_id + '" name="coupons[' + coupon_id + '][removeImage]"></div>');
 };
 
 window.clearImage = function(coupon_id) {
   $("#inputImage" + coupon_id).val("");
 };
 
-window.returnImage = function (coupon_id, image_id, url) {
-  $("#Image" + coupon_id).replaceWith('<div id="Image' + coupon_id + '"><img width="50px" src="' + url + '?id=' + image_id + '" onclick="openImageWindow(this.src);"><button type="button" onclick="removeImage(' + "'" + coupon_id + "', '" + image_id + "', '" + url + "'"  +  ');">Remove</button></div>');
+window.returnImage = function (coupon_id, image_id, url, width, height) {
+  $("#Image" + coupon_id).replaceWith('<div id="Image' + coupon_id + '"><img class="couponImage" src="' + url + '?id=' + image_id + '" onclick="openImageWindow(this.src,' + "'" + width + "', '" + height + "'" +  ');"><button type="button" onclick="removeImage(' + "'" + coupon_id + "', '" + image_id + "', '" + url + "', '" + width + "', '" + height + "'" + ');">Remove</button></div>');
 };
 
 window.changeActivity = function (coupon_id) {
@@ -36,7 +31,7 @@ window.changeActivity = function (coupon_id) {
 
   var new_coupon = "";
   // if coupon is new set it's own class
-  if (coupon_id.indexOf('nc') > -1) {var new_coupon = ' newCoupon';}
+  if (coupon_id.indexOf('nc') > -1) {new_coupon = ' newCoupon';}
   // set coupon activity into "active"
   $("#inputActivity" + coupon_id).val('1');
   // change link text to "Deactivate"
@@ -46,7 +41,7 @@ window.changeActivity = function (coupon_id) {
   $("#tr" + coupon_id + "_2").attr("class", "tr2-body" + new_coupon);
 };
 
-window.pageReset = function () { document.location.reload();}
+window.pageReset = function () { document.location.reload();};
 
 window.removeCoupon = function (coupon_id) {
   // find coupon's position in the coupons table
@@ -55,9 +50,9 @@ window.removeCoupon = function (coupon_id) {
   if (coupon_id.indexOf('nc') == -1) {
     // add it's id into list of deleted coupons
     var r_coupons = $("#rCoupons" ).val();
-    r_coupons = r_coupons == '' ? coupon_id : r_coupons + "," + coupon_id;
+    r_coupons = r_coupons === '' ? coupon_id : r_coupons + "," + coupon_id;
     $("#rCoupons" ).val(r_coupons);
-  };
+  }
 
   // remove rows with current coupon from table
   $("#tr" + coupon_id + "_1").remove();
@@ -84,7 +79,7 @@ window.moveUp = function (coupon_id) {
   $("#tr" + prev_coupon_id + "_1").insertAfter($("#tr" + coupon_id + "_2"));
   // change var position for current and previous coupons
   $("#inputPosition" + coupon_id).val(prev_pos);
-  $("#inputPosition" + prev_coupon_id).val(current_pos); 
+  $("#inputPosition" + prev_coupon_id).val(current_pos);
   // change # of coupon in the table
   $("#tr" + coupon_id + "_1 td:eq(0)").text(prev_pos);
   $("#tr" + prev_coupon_id + "_1 td:eq(0)").text(current_pos);
@@ -206,7 +201,7 @@ window.addCoupon = function () {
   new_row += '<tr class="tr2-body newCoupon"  id="tr' + coupon_id + '_2"> ';
   new_row += '<td> ';
   new_row += '<div id="Image' + coupon_id + '">   ';
-  new_row += '<img height="50px" src="' + url + '?id=1"> ';
+  new_row += '<img class="couponImage" src="' + url + '?id=1"> ';
   new_row += '</div> ';
   new_row += '</td> ';
   new_row += '<td colspan="3"> ';

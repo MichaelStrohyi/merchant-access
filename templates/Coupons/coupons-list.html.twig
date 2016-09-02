@@ -86,8 +86,8 @@
                   <td>
                     <div id="Image{{ coupon_id }}">  
                       {% if coupon.image.exists %}        
-                        <img class="couponImage" src="{{ url }}?id={{ coupon.image.id }}" onclick="openImageWindow(this.src);">
-                        <button type="button" onclick="removeImage('{{ coupon_id }}', '{{ coupon.image.id }}', '{{ url }}');">Remove</button>
+                        <img class="couponImage" src="{{ url }}?id={{ coupon.image.id }}" onclick="openImageWindow(this.src, '{{coupon.image.width }}', '{{coupon.image.height }}');">
+                        <button type="button" onclick="removeImage('{{ coupon_id }}', '{{ coupon.image.id }}', '{{ url }}', '{{coupon.image.width }}', '{{coupon.image.height }}');">Remove</button>
                       {% else %}
                         <img class="couponImage" src="{{ url }}?id=1">
                       {% endif %}
