@@ -13,6 +13,7 @@ function emailConfirmation($template, $params = [])
         case 'account_verification':
             $subject = 'Verify your registration at ' . SIGNUP_SERVER;
             $email = $params['customer']->getEmail();
+            break;
 
         case 'store_verification':
             $subject = 'Verify store ' . $params['store']->getName() . ' ownership';

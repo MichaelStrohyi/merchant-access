@@ -538,7 +538,9 @@ class Store
      **/
     public function save()
     {
-        if ($this->getPrimaryLogo()->getIsModified() && !$this->getPrimaryLogo()->save()) {
+        $id = $this->getId();
+
+        if (!empty($id) && $this->getPrimaryLogo()->getIsModified() && !$this->getPrimaryLogo()->save()) {
             return false;
         }
 
@@ -553,7 +555,7 @@ class Store
                 'keywords' => $this->prepareTextForDb($this->getKeywords()),
                 'description' => $this->prepareTextForDb($this->getDescription()),
                 ];
-            $query = "UPDATE `stores` SET " . _QUpdate($store_data) . " WHERE `id` = " . $this->getId();
+            $query = "UPDATE `stores` SET " . _QUpdate($store_data) . " WHERE `id` = " . $id;
         } else {
             $store_data = ['name' => $this->getName(),
                 'email' => $this->getEmail(),

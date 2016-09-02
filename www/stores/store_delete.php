@@ -35,6 +35,7 @@ if (isset($button_submit)) {
      # display success store deleting page
     echo $twig->render('Stores/success-store-rm.html.twig', [
         'store' => $store,
+        'url' => getPath('stores'),
         ]);
     exit;
 }
