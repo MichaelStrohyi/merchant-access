@@ -111,14 +111,12 @@ class StoreLogo extends Image
      **/
     public function delete()
     {
-        if (!parent::delete()) {
+        $query = "DELETE FROM `store_logos`  WHERE `store_id` = " . $this->getStore()->getId() . " AND `logo_id` = " . $this->getId();
+        if (_QExec($query) === false) {
             return false;
         }
 
-        $query = "DELETE FROM `store_logos`  WHERE `store_id` = " . $this->getStore()->getId() . " AND `logo_id` = " . $this->getId(); 
- 
-        return  _QExec($query) != false;
-
+        return parent::delete() != false;
     }
 
     /**
