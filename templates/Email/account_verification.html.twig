@@ -1,4 +1,4 @@
 {% block body %}
 Hello {{ customer.name }}
-To verify your registration at {{ server }} click the next link: <a href="http://{{ server }}{{ validation_link }}">click to validate</a>
+To verify your registration at {{ server }} click the next link: <a href="http://{{ server }}{{ validation_link|raw }}">click to validate</a>
 {% endblock %}

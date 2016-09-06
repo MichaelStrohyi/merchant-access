@@ -1,4 +1,4 @@
 {% block body %}
 Hello {{ store.customer.name }}
-To verify your ownership of store {{ store.name }} click the next link: <a href="http://{{ server }}{{ validation_link }}">click to validate</a>
+To verify your ownership of store {{ store.name }} click the next link: <a href="http://{{ server }}{{ validation_link|raw }}">click to validate</a>
 {% endblock %}
