@@ -34,11 +34,11 @@ function emailConfirmation($template, $params = [])
 
     $message = getEmailMessage($template, $params);
     
-    if (!(defined('ENVIRONMENT') && ENVIRONMENT == 'development')) {
-        mail($email, $subject, $message);
-    } else {
-        echo '<table border=3><tr><td bgcolor="yellow">' . "$subject <br /> $message </tr></td></table>";
-    }
+    ini_set("SMTP", SMTP_SERVER);
+    ini_set("smtp_port", SMTP_PORT);
+    $additional_headers = "From: " . MAIL_FROM . "\r\n";
+    mail($email, $subject, $message, $additional_headers);
+
 }
 
 /**
