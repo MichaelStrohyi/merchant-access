@@ -3,13 +3,26 @@ window.openImageWindow = (src, width, height) ->
   window.open src, "Image", "width=#{width} +,height=#{height}"
 
 window.removeImage = (coupon_id, image_id, url, width, height) ->
-  $("#Image#{coupon_id}").replaceWith "<div id=\"Image#{coupon_id}\"><img class=\"couponImage\" src=\"#{url}?id=1\"><button type=\"button\" onclick=\"returnImage('#{coupon_id}', '#{image_id}', '#{url}', '#{width}', '#{height}');\">Return Image</button><input type=\"hidden\" class=\"form-control\" id=\"removeImage#{coupon_id}\" name=\"coupons[#{coupon_id}][removeImage]\"></div>"
+  new_html = """
+            <div id="Image#{coupon_id}">
+                <img class="couponImage" src="#{url}?id=1">
+                <button type="button" onclick="returnImage('#{coupon_id}', '#{image_id}', '#{url}', '#{width}', '#{height}');">Return Image</button>
+                <input type="hidden" class="form-control" id="removeImage#{coupon_id}" name="coupons[#{coupon_id}][removeImage]">
+            </div>
+            """
+  $("#Image#{coupon_id}").replaceWith new_html
 
 window.clearImage = (coupon_id) ->
   $("#inputImage#{coupon_id}").val ''
 
 window.returnImage = (coupon_id, image_id, url, width, height) ->
-  $("#Image#{coupon_id}").replaceWith "<div id=\"Image#{coupon_id}\"><img class=\"couponImage\" src=\"#{url}?id=#{image_id}\" onclick=\"openImageWindow(this.src, '#{width}', '#{height}');\"><button type=\"button\" onclick=\"removeImage('#{coupon_id}', '#{image_id}', '#{url}', '#{width}', '#{height}');\">Remove</button></div>"
+  new_html = """
+            <div id="Image#{coupon_id}">
+              <img class="couponImage" src="#{url}?id=#{image_id}" onclick="openImageWindow(this.src, '#{width}', '#{height}');">
+              <button type="button" onclick="removeImage('#{coupon_id}', '#{image_id}', '#{url}', '#{width}', '#{height}');">Remove</button>
+            </div>
+            """
+  $("#Image#{coupon_id}").replaceWith new_html
 
 window.changeActivity = (coupon_id) ->
   # if coupon is active
@@ -151,58 +164,60 @@ window.addCoupon = ->
   # create id for new coupon
   coupon_id = "nc#{window.nc_count}"
   # create html-code of rows for new coupon
-  new_row = "<tr class=\"tr1-body newCoupon\" id=\"tr#{coupon_id}_1\"> "
-  new_row += "<td rowspan=\"2\">#{position}</td> "
-  new_row += "<td colspan=\"4\"> "
-  new_row += "<input type=\"hidden\" id=\"inputPosition#{coupon_id}\" class=\"inputPosition\" name=\"coupons[#{coupon_id}][position]\" title=\"#{coupon_id}\" value=\"#{position}\"> "
-  new_row += "<input type=\"hidden\" id=\"inputActivity#{coupon_id}\" class=\"form-control\" name=\"coupons[#{coupon_id}][activity]\" value=\"1\"> "
-  new_row += "<div> "
-  new_row += "<textarea class=\"form-control\" name=\"coupons[#{coupon_id}][label]\" rows=\"3\"></textarea> "
-  new_row += "<input type=\"hidden\" class=\"form-control\" name=\"coupons[#{coupon_id}][parent_id]\" value=\"\"> "
-  new_row += "</div> "
-  new_row += "</td> "
-  new_row += "<td> "
-  new_row += "<div> "
-  new_row += "<input class=\"form-control\" type=\"text\" name=\"coupons[#{coupon_id}][code]\" value=\"\"> "
-  new_row += "</div> "
-  new_row += "</td> "
-  new_row += "<td> "
-  new_row += "<div> "
-  new_row += "<input class=\"form-control\" type=\"text\" name=\"coupons[#{coupon_id}][link]\" value=\"\"> "
-  new_row += "</div> "
-  new_row += "</td> "
-  new_row += "<td> "
-  new_row += "Starts: "
-  new_row += "<div> "
-  new_row += "<input class=\"form-control\" type=\"text\" name=\"coupons[#{coupon_id}][startDate]\" value=\"\"> "
-  new_row += "</div> "
-  new_row += "Expires: "
-  new_row += "<div> "
-  new_row += "<input class=\"form-control\" type=\"text\" name=\"coupons[#{coupon_id}][expireDate]\" value=\"\"> "
-  new_row += "</div> "
-  new_row += "</td> "
-  new_row += "<td> "
-  new_row += "<a href=\"javascript:makeFirst('#{coupon_id};')\" class=\"couponActions\">First</a></br> "
-  new_row += "<a href=\"javascript:makeLast('#{coupon_id};')\" class=\"couponActions\">Last</a></br> "
-  new_row += "<a href=\"javascript:moveUp('#{coupon_id}');\" class=\"couponActions\">Up</a></br> "
-  new_row += "<a href=\"javascript:moveDown('#{coupon_id}');\" class=\"couponActions\">Down</a></br> "
-  new_row += "<a href=\"javascript:changeActivity('#{coupon_id}');\" class=\"couponActions\" id=\"activationLink#{coupon_id}\">Deactivate</a><br> "
-  new_row += "<a href=\"javascript:removeCoupon('#{coupon_id}');\" class=\"couponActions\">Remove</a> "
-  new_row += "</td> "
-  new_row += "</tr> "
-  new_row += "<tr class=\"tr2-body newCoupon\"  id=\"tr#{coupon_id}_2\"> "
-  new_row += "<td> "
-  new_row += "<div id=\"Image#{coupon_id}\"> "
-  new_row += "<img class=\"couponImage\" src=\"#{window.url}?id=1\"> "
-  new_row += "</div> "
-  new_row += "</td> "
-  new_row += "<td colspan=\"3\"> "
-  new_row += "<div> "
-  new_row += "<input type=\"file\" class=\"form-control\" id=\"inputImage#{coupon_id}\" placeholder=\"Choose image for coupon if needed\" name=\"newImage#{coupon_id}\" accept=\"#{window.accept_filter}\"> "
-  new_row += "<button type=\"button\" onclick=\"clearImage('#{coupon_id}');\">Clear</button> "
-  new_row += "</div> "
-  new_row += "</td> "
-  new_row += "<td colspan=\"5\"></td> "
-  new_row += "</tr> ";
+  new_row = """
+            <tr class="tr1-body newCoupon" id="tr#{coupon_id}_1">
+            <td rowspan="2">#{position}</td>
+            <td colspan="4">
+            <input type="hidden" id="inputPosition#{coupon_id}" class="inputPosition" name="coupons[#{coupon_id}][position]" title="#{coupon_id}" value="#{position}">
+            <input type="hidden" id="inputActivity#{coupon_id}" class="form-control" name="coupons[#{coupon_id}][activity]" value="1">
+            <div>
+            <textarea class="form-control" name="coupons[#{coupon_id}][label]" rows="3"></textarea>
+            <input type="hidden" class="form-control" name="coupons[#{coupon_id}][parent_id]" value=">
+            </div>
+            </td>
+            <td>
+            <div>
+            <input class="form-control" type="text" name="coupons[#{coupon_id}][code]" value=">
+            </div>
+            </td>
+            <td>
+            <div>
+            <input class="form-control" type="text" name="coupons[#{coupon_id}][link]" value=">
+            </div>
+            </td>
+            <td>
+            Starts:
+            <div>
+            <input class="form-control" type="text" name="coupons[#{coupon_id}][startDate]" value=">
+            </div>
+            Expires:
+            <div>
+            <input class="form-control" type="text" name="coupons[#{coupon_id}][expireDate]" value=">
+            </div>
+            </td>
+            <td>
+            <a href="javascript:makeFirst('#{coupon_id};')" class="couponActions">First</a></br>
+            <a href="javascript:makeLast('#{coupon_id};')" class="couponActions">Last</a></br>
+            <a href="javascript:moveUp('#{coupon_id}');" class="couponActions">Up</a></br>
+            <a href="javascript:moveDown('#{coupon_id}');" class="couponActions">Down</a></br>
+            <a href="javascript:changeActivity('#{coupon_id}');" class="couponActions" id="activationLink#{coupon_id}">Deactivate</a><br>
+            <a href="javascript:removeCoupon('#{coupon_id}');" class="couponActions">Remove</a>
+            </td>
+            </tr>
+            <tr class="tr2-body newCoupon"  id="tr#{coupon_id}_2">
+            <td>
+            <div id="Image#{coupon_id}">
+            <img class="couponImage" src="#{window.url}?id=1">
+            </div>
+            </td>
+            <td colspan="3">
+            <div>
+            <input type="file" class="form-control" id="inputImage#{coupon_id}" placeholder="Choose image for coupon if needed" name="newImage#{coupon_id}" accept="#{window.accept_filter}">
+            <button type="button" onclick="clearImage('#{coupon_id}');">Clear</button>
+            </div>
+            </td>
+            <td colspan="5"></td>
+            </tr>
+            """
   # add new coupon at the end of table
   $("#couponsTable").append new_row
