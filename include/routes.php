@@ -39,7 +39,7 @@ function getPath($route_name, $params = [])
             break;
 
         case 'stores':
-            $location = '/stores/stores.php';
+            $location = '/stores/';
             break;
 
         case 'resend_verification':
