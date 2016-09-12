@@ -469,13 +469,8 @@ class Store
             $this->setUrl($info['url']);
         }
         
-        if (!empty($info['description'])) {
-            $this->setDescription($info['description']);
-        }
-
-        if (!empty($info['keywords'])) {
-            $this->setKeywords($info['keywords']);
-        }
+        $this->setDescription($info['description']);
+        $this->setKeywords($info['keywords']);
                      
         return $this;
     }
