@@ -631,4 +631,27 @@ class Customer
 
         return $stores;
     }
+
+    /**
+     * Check if customer has access to $store. Rreturn null if customer has access, otherwise return error-string
+     * @param App\Store $store
+     * @return string
+     * @author Michael Strohyi
+     **/
+    public function checkStoreAccess($store)
+    {
+        if (!$store->exists()) {
+            return 'access_denied';
+        }
+
+        if ($store->isWaitingRemoving()) {
+            return 'store_removed';
+        }
+
+        if (!$store->isActive()) {
+            return 'store_not_active';
+        }
+
+        return null;
+    }
 }

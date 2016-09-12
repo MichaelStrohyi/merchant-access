@@ -106,42 +106,39 @@ function isUrlValid($url)
 }
 
 /**
- * Return boolean if customer can work with given $store.
- * Otherwise return false and render html-template with error.
+ * Render html-template with error-string according to $error.
  *
  * @param App\Store $store
- * @return boolean
+ * @param string $error
+ * @return void
  * @author Michael Strohyi
  **/
-function customerCanWork($store)
+function showErrorPage($store, $error)
 {
     $twig = getTwig();
 
-    if (!$store->exists()) {
+    switch ($error) {
+      case 'access_denied':
         echo $twig->render('Stores/store-access-denied.html.twig', [
             'message' => 'You have no permission to work with this store',
             'url' => getPath('stores'),
             ]);
-        return false;
-    }
+        break;
 
-    if ($store->isWaitingRemoving()) {
+      case 'store_removed':
         echo $twig->render('Stores/store-access-denied.html.twig', [
             'message' => 'This store is waiting for removing validation. Please click validation link from email or <a href="' . getPath('resend_rm_verification', ['store' => $store]) . '">click here</a> to request new validation email',
             'url' => getPath('stores'),
             ]);
-        return false;
-    }
+        break;
 
-    if (!$store->isActive()) {
+      case 'store_not_active':
         echo $twig->render('Stores/store-access-denied.html.twig', [
             'message' => 'You have not validated this store ownership yet. Please, validate it or <a href="' . getPath('resend_verification', ['store' => $store]) . '">click here</a> to request new validation email',
             'url' => getPath('stores'),
             ]);
-        return false;
+        break;
     }
-
-    return true;
 }
 
 /**

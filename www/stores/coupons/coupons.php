@@ -27,7 +27,9 @@ $customer = getLoggedCustomer();
 $store = new App\Store($customer, $store_id);
 
 # check if current $customer has access to $store
-if (!customerCanWork($store)) {
+$access_error = $customer->checkStoreAccess($store);
+if (!empty($access_error)) {
+    showErrorPage($store, $access_error);
     exit;
 }
 
