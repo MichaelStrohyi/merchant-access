@@ -20,6 +20,9 @@ if (!$store->exists() || !$store->isHashValid($hash)) {
         ]);
     exit;
 }
+
+$store_name = $store->getName();
+
 switch ($action) {
     case 'rm':
         if (!$store->isWaitingRemoving()) {
@@ -38,7 +41,8 @@ switch ($action) {
             exit;
         }
 
-       break;
+        $template = 'Stores/success-rm-verification.html.twig';
+        break;
 
     case 'add':
         if (!$store->isWaitingValidation()) {
@@ -57,11 +61,17 @@ switch ($action) {
             exit;
         }
 
-       break;
+        $template = 'Stores/success-verification.html.twig';
+        break;
+
+    default:
+        $template = 'Stores/success-verification.html.twig';
+        break;
 }
 
 # show sccess validation page
-echo $twig->render('Stores/success-verification.html.twig', [
+echo $twig->render($template, [
     'customer' => $customer, 
     'url' => getPath('stores'),
+    'store_name' => $store_name,
     ]);
