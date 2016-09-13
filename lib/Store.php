@@ -469,8 +469,13 @@ class Store
             $this->setUrl($info['url']);
         }
         
-        $this->setDescription($info['description']);
-        $this->setKeywords($info['keywords']);
+        if (isset($info['description'])) {
+            $this->setDescription($info['description']);
+        }
+
+        if (isset($info['keywords'])) {
+            $this->setKeywords($info['keywords']);
+        }
                      
         return $this;
     }
