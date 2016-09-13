@@ -55,3 +55,9 @@
 .couponImage {
     height: 50px;
 }
+
+a.disabled {
+    pointer-events: none;
+    cursor: default;
+    color: #999;
+}
