@@ -17,7 +17,9 @@ $customer = getLoggedCustomer();
 $store = new App\Store($customer, $store_id);
 
 $access_error = $customer->checkStoreAccess($store);
-if (!empty($access_error)) {
+$store_not_active = $store->isWaitingValidation();
+
+if (!empty($access_error) && !$store_not_active) {
     showErrorPage($store, $access_error);
     exit;
 }
@@ -31,6 +33,11 @@ if (isset($button_submit)) {
                 ]);
             exit;
         }
+
+    if ($store_not_active) {
+        redirectToPage('store_rm_verification', ['store' => $store]);
+        exit;
+    }
 
     emailConfirmation('store_rm_verification', ['store' => $store]);
 

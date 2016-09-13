@@ -105,7 +105,7 @@ function getPath($route_name, $params = [])
  **/
 function redirectToPage($route_name, $params = [])
 {
-    $location = getPath($route_name, $params = []);
+    $location = getPath($route_name, $params);
 
     if (empty($location)) {
         throw Exception('Page not found');
