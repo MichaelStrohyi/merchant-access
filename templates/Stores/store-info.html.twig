@@ -83,7 +83,14 @@
     };
 
     $("#mainForm").on('reset', function() {
-      setTimeout(function() { $("#currentLogo").replaceWith('<div class="col-sm-10" id="currentLogo"><img src="{{ url }}?id={{ store.primaryLogo.id }}"><button id="removeButton" onclick="removeLogo();">Remove</button></div>') });
+      setTimeout(function() { 
+        {% if store.primaryLogo.exists %}
+          var logo = '<img src="{{ url }}?id={{ store.primaryLogo.id }}"><button type="button" onclick="removeLogo();">Remove</button>';
+        {% else %}
+          var logo = 'Store has no logo';
+        {% endif %}
+        $("#currentLogo").replaceWith('<div class="col-sm-10" id="currentLogo">' + logo + '</div>');
+      });
     });
   </script>
   {% if message == 'saved' %}
