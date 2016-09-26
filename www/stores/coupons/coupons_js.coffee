@@ -2,11 +2,11 @@ window.openImageWindow = (src, width, height) ->
   # open image in new window (window size = image size)
   window.open src, "Image", "width=#{width} +,height=#{height}"
 
-window.removeImage = (coupon_id, image_id, url, width, height) ->
+window.removeImage = (coupon_id, image_id, width, height) ->
   new_html = """
             <div id="Image#{coupon_id}">
-                <img class="couponImage" src="#{url}?id=1">
-                <button type="button" onclick="returnImage('#{coupon_id}', '#{image_id}', '#{url}', '#{width}', '#{height}');">Return Image</button>
+                <img class="couponImage" src="#{window.noimage}">
+                <button type="button" onclick="returnImage('#{coupon_id}', '#{image_id}', '#{width}', '#{height}');">Return Image</button>
                 <input type="hidden" class="form-control" id="removeImage#{coupon_id}" name="coupons[#{coupon_id}][removeImage]">
             </div>
             """
@@ -18,11 +18,11 @@ window.clearImage = (coupon_id) ->
   #For other browsers
   $("#inputImage#{coupon_id}").val ''
 
-window.returnImage = (coupon_id, image_id, url, width, height) ->
+window.returnImage = (coupon_id, image_id, width, height) ->
   new_html = """
             <div id="Image#{coupon_id}">
-              <img class="couponImage" src="#{url}?id=#{image_id}" onclick="openImageWindow(this.src, '#{width}', '#{height}');">
-              <button type="button" onclick="removeImage('#{coupon_id}', '#{image_id}', '#{url}', '#{width}', '#{height}');">Remove</button>
+              <img class="couponImage" src="#{window.url}?id=#{image_id}" onclick="openImageWindow(this.src, '#{width}', '#{height}');">
+              <button type="button" onclick="removeImage('#{coupon_id}', '#{image_id}', '#{width}', '#{height}');">Remove</button>
             </div>
             """
   $("#Image#{coupon_id}").replaceWith new_html
@@ -210,7 +210,7 @@ window.addCoupon = ->
             <tr class="tr2-body newCoupon"  id="tr#{coupon_id}_2">
             <td>
             <div id="Image#{coupon_id}">
-            <img class="couponImage" src="#{window.url}?id=1">
+            <img class="couponImage" src="#{window.noimage}">
             </div>
             </td>
             <td colspan="3">

@@ -3,8 +3,8 @@ window.openImageWindow = function (src, width, height) {
   window.open(src,"Image","width=" + width + ",height=" + height);
 };
 
-window.removeImage = function (coupon_id, image_id, url, width, height) {
-  $("#Image" + coupon_id).replaceWith('<div id="Image' + coupon_id + '"><img class="couponImage" src="' + url + '?id=1"><button type="button" onclick="returnImage(' + "'" + coupon_id + "', '" + image_id + "', '" + url + "', '" + width + "', '" + height + "'" + ');">Return Image</button><input type="hidden" class="form-control" id="removeImage' + coupon_id + '" name="coupons[' + coupon_id + '][removeImage]"></div>');
+window.removeImage = function (coupon_id, image_id, width, height) {
+  $("#Image" + coupon_id).replaceWith('<div id="Image' + coupon_id + '"><img class="couponImage" src="' + noimage + '"><button type="button" onclick="returnImage(' + "'" + coupon_id + "', '" + image_id + "', '" + width + "', '" + height + "'" + ');">Return Image</button><input type="hidden" class="form-control" id="removeImage' + coupon_id + '" name="coupons[' + coupon_id + '][removeImage]"></div>');
 };
 
 window.clearImage = function(coupon_id) {
@@ -14,8 +14,8 @@ window.clearImage = function(coupon_id) {
   $("#inputImage" + coupon_id).val("");
 };
 
-window.returnImage = function (coupon_id, image_id, url, width, height) {
-  $("#Image" + coupon_id).replaceWith('<div id="Image' + coupon_id + '"><img class="couponImage" src="' + url + '?id=' + image_id + '" onclick="openImageWindow(this.src,' + "'" + width + "', '" + height + "'" +  ');"><button type="button" onclick="removeImage(' + "'" + coupon_id + "', '" + image_id + "', '" + url + "', '" + width + "', '" + height + "'" + ');">Remove</button></div>');
+window.returnImage = function (coupon_id, image_id, width, height) {
+  $("#Image" + coupon_id).replaceWith('<div id="Image' + coupon_id + '"><img class="couponImage" src="' + url + '?id=' + image_id + '" onclick="openImageWindow(this.src,' + "'" + width + "', '" + height + "'" +  ');"><button type="button" onclick="removeImage(' + "'" + coupon_id + "', '" + image_id + "', '" + width + "', '" + height + "'" + ');">Remove</button></div>');
 };
 
 window.changeActivity = function (coupon_id) {
@@ -204,7 +204,7 @@ window.addCoupon = function () {
   new_row += '<tr class="tr2-body newCoupon"  id="tr' + coupon_id + '_2"> ';
   new_row += '<td> ';
   new_row += '<div id="Image' + coupon_id + '">   ';
-  new_row += '<img class="couponImage" src="' + url + '?id=1"> ';
+  new_row += '<img class="couponImage" src="' + noimage + '"> ';
   new_row += '</div> ';
   new_row += '</td> ';
   new_row += '<td colspan="3"> ';

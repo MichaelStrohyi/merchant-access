@@ -2,6 +2,8 @@
 
 require_once __DIR__  . '/../../../include/core.php';
 
+const NOIMAGE_IMAGE = '/images/noimage.jpg';
+
 # get store_id from $_POST
 $store_id = filter_input(INPUT_POST, 'store_id');
 
@@ -69,6 +71,7 @@ if (isset($buttons_data['buttonSave']))
             # if coupon not valid # set flag "error happened"
             if (!$store->getCoupons()[$coupon_id]->isValid()) {
                 $error = true;
+                $message = "error";
             }
         }
 
@@ -115,7 +118,6 @@ if (isset($buttons_data['buttonSave']))
         # set flag "coupons is updated"
         $message = 'saved';
     }
-
 }
 
 
@@ -125,4 +127,5 @@ echo $twig->render('Coupons/coupons-list.html.twig', [
     'url' => getPath('image'),
     'message' => $message,
     'coupons_js' => getPath('coupons_js'),
+    'noimage' => NOIMAGE_IMAGE,
     ]);

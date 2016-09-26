@@ -98,7 +98,7 @@ class Coupon
     /**
      * New image
      *
-     * @var string
+     * @var array
      **/
     private $newImage;
 
@@ -602,13 +602,12 @@ class Coupon
         if (!$newImage->isValid()) {
             $this->errors['newImage'] = $newImage->getErrorString();
         }
-
     }
 
     /**
      * Return newImage
      *
-     * @return string
+     * @return array
      * @author Michael Strohyi
      **/
     public function getNewImage()
@@ -619,7 +618,7 @@ class Coupon
     /**
      * Set newImage to $newImage
      *
-     * @param string $newImage
+     * @param array $newImage
      * @return self
      * @author Michael Strohyi
      **/
