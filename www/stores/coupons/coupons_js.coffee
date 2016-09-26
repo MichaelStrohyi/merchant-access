@@ -13,6 +13,9 @@ window.removeImage = (coupon_id, image_id, url, width, height) ->
   $("#Image#{coupon_id}").replaceWith new_html
 
 window.clearImage = (coupon_id) ->
+  #For IE
+  $("#inputImage#{coupon_id}").replaceWith $("#inputImage#{coupon_id}").clone true
+  #For other browsers
   $("#inputImage#{coupon_id}").val ''
 
 window.returnImage = (coupon_id, image_id, url, width, height) ->
