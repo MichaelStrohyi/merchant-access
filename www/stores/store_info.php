@@ -76,6 +76,7 @@ if (!empty($_FILES['new_logo']['name']) && $_FILES['new_logo']['error'] == 0) {
     }
     # load new logo into primary logo
     $store->getPrimaryLogo()->gatherFileInfo($_FILES['new_logo']);
+}
 
 # if button Save is pressed
 if (isset($form_data['buttonSave']))
@@ -87,7 +88,7 @@ if (isset($form_data['buttonSave']))
     #set flag 'store is saved'
     $message = 'saved';
     }
-}
+
 
 # display store-info page
 echo $twig->render('Stores/store-info.html.twig', [
