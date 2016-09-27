@@ -24,6 +24,11 @@ function emailConfirmation($template, $params = [])
             $subject = 'Verify store ' . $params['store']->getName() . ' removing';
             $email = $params['store']->getEmail();
             break;
+
+        case 'password_recovery':
+            $subject = 'Password recovery for account at ' . SIGNUP_SERVER;
+            $email = $params['customer']->getEmail();
+            break;
         
         default:
             $subject = '';

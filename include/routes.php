@@ -89,6 +89,11 @@ function getPath($route_name, $params = [])
             $location = '/stores/coupons/coupons.js';
             break;
 
+        case 'password_recovery':
+            $customer = $params['customer'];
+            $location = '/accounts/new_password.php?id=' . $customer->getId() . '&hash=' . $customer->getHash();
+            break;
+
         default:
             $location = null;
             break;
