@@ -247,11 +247,11 @@ class Customer
     {
         if (!empty($password)) {
             $password = $this->encryptPassword($password);
+        }
 
-            if ($this->password != $password) {
-                $this->password = $password;
-                $this->isModified = true;
-            }
+        if ($this->password != $password) {
+            $this->password = $password;
+            $this->isModified = true;
         }
 
         return $this;
@@ -335,8 +335,8 @@ class Customer
         if (!empty($info['email'])) {
             $this->setEmail($info['email']);
         }
-        
-        if (!empty($info['password'])) {
+
+        if (!empty($info['password']) || $this->exists()) {
             $this->setPassword($info['password']);
         }
         
@@ -395,14 +395,25 @@ class Customer
             return true;
         }
 
-        $merchant_account = [
-            'email' => $this->getEmail(),
-            'password' => $this->getPassword(),
-            'name' => $this->getName(),
-            'status' => self::CUSTOMER_WAITING_VALIDATION,
-            'reg_date' => date("Y-m-d H:i:s"),
-        ];
-        $query = "INSERT INTO `merchants` "._QInsert($merchant_account);
+        if ($this->exists()) {
+            $merchant_account = [
+                'password' => $this->getPassword(),
+                'name' => $this->getName(),
+            ];
+            $query = "UPDATE `merchants` SET " . _QUpdate($merchant_account) . " WHERE `id` = " . $this->getId();
+            $new_id = false;
+        } else {
+            $merchant_account = [
+                'email' => $this->getEmail(),
+                'password' => $this->getPassword(),
+                'name' => $this->getName(),
+                'status' => self::CUSTOMER_WAITING_VALIDATION,
+                'reg_date' => date("Y-m-d H:i:s"),
+            ];
+            $query = "INSERT INTO `merchants` "._QInsert($merchant_account);
+            $new_id = true;
+        }
+       
         $res = _QExec($query);
 
         if ($res === false) {
@@ -410,7 +421,10 @@ class Customer
             return false;
         }
 
-        $this->id = _QID();
+        if ($new_id) {
+            $this->id = _QID();
+        }
+
         $this->isModified = false;
         
         return true;
