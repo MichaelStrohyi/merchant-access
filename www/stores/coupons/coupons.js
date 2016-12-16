@@ -156,7 +156,9 @@ window.addCoupon = function () {
   }
 
   // count amount of new coupons
+  var nc_count = $("#ncCount").val();
   nc_count++;
+  $("#ncCount").val(nc_count);
   // find position for new coupon at the end of table
   var position = ($("#couponsTable tr").length - 1) / 2 + 1;
   // create id for new coupon

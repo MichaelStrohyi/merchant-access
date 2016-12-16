@@ -10,6 +10,9 @@ $store_id = filter_input(INPUT_POST, 'store_id');
 # get removed_coupons from $_POST
 $removed_coupons = filter_input(INPUT_POST, 'rCoupons');
 
+# get new coupons count from $_POST
+$nc_count = filter_input(INPUT_POST, 'ncCount');
+
 # if $store_id is not set get it from $_GET
 if (!isset($store_id_post)) {
     # get variables from $_GET
@@ -117,9 +120,9 @@ if (isset($buttons_data['buttonSave']))
 
         # set flag "coupons is updated"
         $message = 'saved';
+        $nc_count = null;
     }
 }
-
 
 # display coupons page
 echo $twig->render('Coupons/coupons-list.html.twig', [
@@ -128,4 +131,5 @@ echo $twig->render('Coupons/coupons-list.html.twig', [
     'message' => $message,
     'coupons_js' => getPath('coupons_js'),
     'noimage' => NOIMAGE_IMAGE,
+    'ncCount' => $nc_count,
     ]);
