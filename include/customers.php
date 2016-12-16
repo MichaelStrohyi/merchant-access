@@ -41,7 +41,9 @@ function emailConfirmation($template, $params = [])
     
     ini_set("SMTP", SMTP_SERVER);
     ini_set("smtp_port", SMTP_PORT);
-    $additional_headers = "From: " . MAIL_FROM . "\r\n";
+    $additional_headers = "MIME-Version: 1.0\r\n";
+    $additional_headers .= "Content-type: text/html; charset=iso-8859-1\r\n";
+    $additional_headers .= "From: " . MAIL_FROM . "\r\n";
     mail($email, $subject, $message, $additional_headers);
 
 }

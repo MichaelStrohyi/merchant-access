@@ -1,4 +1,5 @@
+{% extends 'base_email.html.twig' %}
 {% block body %}
-Hello {{ store.customer.name }}
+Hello {{ store.customer.name }}.</br>
 To verify your ownership of store {{ store.name }} click the next link: <a href="http://{{ server }}{{ validation_link|raw }}">click to validate</a>
 {% endblock %}
