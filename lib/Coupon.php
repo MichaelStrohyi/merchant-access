@@ -116,6 +116,13 @@ class Coupon
      **/
     private $tempId;
 
+    /**
+     * Flag to show coupon is removed by customer in current session
+     *
+     * @var boolean
+     **/
+    private $isRemoved;
+
     public function __construct($store , $id = null)
     {
         $this->store = $store;
@@ -368,6 +375,7 @@ class Coupon
         }
 
         $this->isModified = false;
+        $this->isRemoved = false;
         $query = "SELECT * FROM `coupons` WHERE `id` = $id AND `store_id` = $store_id";
         _QExec($query);
         $res_element = _QElem();
@@ -828,5 +836,29 @@ class Coupon
     {
         return $this->tempId;
     }
+
+    /**
+     * Set isRemoved
+     *
+     * @return self
+     * @author Michael Strohyi
+     **/
+    public function setIsRemoved($is_removed)
+    {
+        $this->isRemoved = $is_removed;
+        return $this;
+    }
+
+    /**
+     * Return isRemoved
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function getIsRemoved()
+    {
+        return $this->isRemoved;
+    }
+
 
 }

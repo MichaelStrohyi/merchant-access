@@ -121,6 +121,7 @@ if (isset($buttons_data['buttonSave']))
         # set flag "coupons is updated"
         $message = 'saved';
         $nc_count = null;
+        $removed_coupons = null;
     }
 }
 
@@ -132,4 +133,5 @@ echo $twig->render('Coupons/coupons-list.html.twig', [
     'coupons_js' => getPath('coupons_js'),
     'noimage' => NOIMAGE_IMAGE,
     'ncCount' => $nc_count,
+    'rCoupons' => $removed_coupons,
     ]);

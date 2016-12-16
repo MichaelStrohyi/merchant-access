@@ -981,6 +981,7 @@ class Store
             # add into new coupons array current coupon if it does not exist in this array
            if (!in_array($key, $coupons_position)){
             $sorted_coupons[$key] = $coupons[$key];
+            $sorted_coupons[$key]->setIsRemoved(true);
            }
         }
 
