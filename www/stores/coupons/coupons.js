@@ -44,7 +44,11 @@ window.changeActivity = function (coupon_id) {
   $("#tr" + coupon_id + "_2").attr("class", "tr2-body" + new_coupon);
 };
 
-window.pageReset = function () { document.location.reload();};
+window.pageReset = function () {
+  $("#rCoupons").val('');
+  $("#ncCount").val('0');
+  document.location.reload();
+};
 
 window.removeCoupon = function (coupon_id) {
   // find coupon's position in the coupons table
