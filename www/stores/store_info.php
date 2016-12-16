@@ -11,7 +11,6 @@ $form_data = filter_input(INPUT_POST, 'store', FILTER_DEFAULT, FILTER_REQUIRE_AR
 # get store_id from $_POST if it is set
 if (isset($form_data['id'])) {
     $store_id = $form_data['id'];
-
 }
 
 # unset flag 'store is saved'

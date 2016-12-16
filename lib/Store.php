@@ -9,8 +9,7 @@ class Store
     const STORE_EMAIL_NOT_VALID = 'Please, enter valid Email';
     const STORE_EMAIL_WRONG_DOMAIN = "To add store you MUST use email on the store's domain";
     const STORE_URL_NOT_VALID = 'Please, enter valid URL (with http:// or https://)';
-    const STORE_ALREADY_ADDED = "This store is already added somebody's account";
-    const STORE_EXISTS = 'This store is already added to other account';
+    const STORE_ALREADY_ADDED = "This store is already added to somebody's account";
     const STORE_WAITING_VALIDATION = 'added';
     const STORE_WAITING_REMOVING = 'deleted';
     const STORE_ACTIVE = 'active';

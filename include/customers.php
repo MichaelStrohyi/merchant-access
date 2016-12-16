@@ -58,8 +58,7 @@ function emailConfirmation($template, $params = [])
  **/
 function getEmailMessage($template, $params = [])
 {
-    $template_params = [$params, 
-        'server' => SIGNUP_SERVER,
+    $template_params = $params + ['server' => SIGNUP_SERVER,
         'validation_link' => getPath($template, $params),
         ];
 
