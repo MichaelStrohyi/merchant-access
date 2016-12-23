@@ -61,3 +61,30 @@ a.disabled {
     cursor: default;
     color: #999;
 }
+
+div.reg_form {
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    text-align: center;
+    background-color: white;
+    padding: 10px;
+}
+
+div.logo img {
+max-width: 100%;
+    height: auto;
+    padding: 10px;
+    display: block;
+    margin: 0 auto;
+}
+
+div.container {
+    width: 750px;
+    height: 100%;
+    margin: 0 auto;
+    overflow: auto;
+    }
+
+body.reg_form {
+background-color: lightblue;
+}

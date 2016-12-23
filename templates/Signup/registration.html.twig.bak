@@ -4,10 +4,7 @@
 
 {% block body %}
     <div class="container">
-      <div class="logo">
-        <img src="{{ logo }}">
-      </div>
-      <div id="registration-form" class="reg_form">
+      <div id="registration-form">
         <header align="center">
           <h1>Registration form</h1>
         </header>
@@ -70,8 +67,4 @@
 {% block javascripts %}
   {{ parent() }}
   {{ captcha.jSCode|raw }} 
-{% endblock %}
-
-{% block body_class %}
-  class="reg_form"
 {% endblock %}

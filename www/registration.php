@@ -5,6 +5,8 @@ define('LOGIN_CHECK', false);
 require_once __DIR__  . '/../include/core.php';
 require_once INCLUDE_DIR  . 'customers.php';
 
+const LOGO_IMAGE = '/images/registration_logo.png';
+
 $customer = new App\Customer;
 $googleCaptcha = new App\GoogleCaptcha(GOOGLE_CAPTCHA_SITEKEY, GOOGLE_CAPTCHA_SECRETKEY);
 
@@ -44,4 +46,5 @@ if (isset($_POST['buttonSubmit'])) {
 echo $twig->render('Signup/registration.html.twig', [
     'customer' => $customer,
     'captcha' => $googleCaptcha,
+    'logo' => LOGO_IMAGE,
     ]);
