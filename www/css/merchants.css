@@ -65,14 +65,17 @@ a.disabled {
 div.reg_form {
     border-radius: 10px; 
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    text-align: center;
     background-color: white;
     padding: 10px;
-    margin: 10px;
+    margin: 5px;
+
+}
+.reg_form  h1{
+    text-align: center;
 }
 
 div.logo img {
-max-width: 100%;
+    max-width: 100%;
     height: auto;
     padding: 10px;
     display: block;
@@ -80,10 +83,10 @@ max-width: 100%;
 }
 
 div.container {
-    width: 750px;
+    max-width: 750px;
+    min-width: 360px;
     height: 100%;
     margin: 0 auto;
-    overflow: auto;
     }
 
 body.reg_form {
