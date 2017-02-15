@@ -668,4 +668,25 @@ class Customer
 
         return null;
     }
+
+    /**
+     * Return array of App\Ticket associated with current customer
+     *
+     * @return array
+     * @author Michael Strohyi
+     **/
+    public function getTickets()
+    {
+        $query = "SELECT `id` FROM `tickets` WHERE `merchantId` = ".$this->getId();
+        _QExec($query, true);
+        $res_assoc = _QAssoc();
+
+        $tickets = [];
+
+        foreach ($res_assoc as $key => $value) {
+            $tickets [] = new Ticket($this, $value['id']);
+        }
+
+        return $tickets;
+    }
 }
