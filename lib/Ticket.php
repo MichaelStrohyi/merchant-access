@@ -1,9 +1,15 @@
 <?php
 
 namespace App;
+use DateTime;
 
 class Ticket
 {
+    const TICKET_REQUIRED_FIELD = 'This is a required field.';
+    const TICKET_THEME_MALFORMED = 'Theme contains deprecated characters. Allowed only printable characters.';
+    const TICKET_STATUS_ACTIVE = 'active';
+    const TICKET_STATUS_CLOSED = 'closed';
+
     /**
      * Identifier (from the db)
      *
@@ -28,14 +34,14 @@ class Ticket
     /**
      * Time when ticket was creadet
      *
-     * @var string
+     * @var DateTime
      **/
     private $timeCreated;
 
     /**
      * Time when ticket was updated last time
      *
-     * @var string
+     * @var DateTime
      **/
     private $timeUpdated;
 
@@ -59,6 +65,13 @@ class Ticket
      * @var App\Customer
      **/
     private $customer;
+
+    /**
+     * Errors
+     *
+     * @var array
+     **/
+    private $errors;
 
 
     public function __construct($customer = null, $id = null)
@@ -149,24 +162,6 @@ class Ticket
     }
 
     /**
-     * Set timeCreated to $timeCreated
-     *
-     * @param string $timeCreated
-     * @return self
-     * @author Michael Strohyi
-     **/
-    public function setTimeCreated($timeCreated)
-    {
-        
-        if ($this->timeCreated != $timeCreated) {
-            $this->timeCreated = $timeCreated;
-            $this->isModified = true;
-        }
-
-        return $this;
-    }
-
-    /**
      * Return timeUpdated
      *
      * @return string
@@ -245,25 +240,8 @@ class Ticket
         $this->id = $id;
         $this->theme = $res_element['theme']; 
         $this->status = $res_element['status'];
-        $timeUpdated = $res_element['timeUpdated'];
-        if (!empty($timeUpdated)) {
-            $date_array = explode(' ', $timeUpdated);
-            $time_string = $date_array[1];
-            $date_array = explode('-', $date_array[0]);
-            $timeUpdated = $date_array[1] . '-' . $date_array[2] . '-' . $date_array[0]  . ' ' . $time_string;
-        }
-
-        $this->timeUpdated = $timeUpdated;
-
-        $timeCreated = $res_element['timeCreated'];
-        if (!empty($timeCreated)) {
-            $date_array = explode(' ', $timeCreated);
-            $time_string = $date_array[1];
-            $date_array = explode('-', $date_array[0]);
-            $timeCreated = $date_array[1] . '-' . $date_array[2] . '-' . $date_array[0]  . ' ' . $time_string;
-        }
-
-        $this->timeCreated = $timeCreated;
+        $this->timeUpdated = new DateTime($res_element['timeUpdated']);
+        $this->timeCreated = new DateTime($res_element['timeCreated']);
         $this->getMessagesList();
     }
 
@@ -311,4 +289,270 @@ class Ticket
         $this->messages = $messages_array;
     }
 
+    /**
+     * Gather ticket information from the given $info.
+     * Keep non-existing fields empty.
+     *
+     * @param  array $info
+     * @return self
+     * @author Michael Strohyi
+     **/
+    public function fetchInfo($info)
+    {
+        if (!empty($info['theme'])) {
+            $this->setTheme($info['theme']);
+        }
+
+        $this->timeCreated = new DateTime();
+
+        if (!empty($info['messages'])) {
+            $this->fetchMessages($info['messages']);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Validate ticket data.
+     *
+     * @return self
+     * @author Michael Strohyi
+     **/
+    public function validate()
+    {
+        $this->validateTheme();
+        $this->validateMessages();
+
+        return $this;
+    }
+
+    /**
+     * Return true if all fields has valid data, false otherwise.
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function isValid()
+    {
+        return empty($this->errors);
+    }
+
+    /**
+     * Return error string for given field $name
+     *
+     * @param string $name
+     * @return string
+     * @author Michael Strohyi
+     **/
+    public function getErrorString($name)
+    {
+        return $this->hasError($name) ? $this->errors[$name] : '';
+    }
+
+    /**
+     * Return true if field with $name has error
+     *
+     * @param string $name
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function hasError($name)
+    {
+        return isset($this->errors[$name]);
+    }
+
+    /**
+     * Check if current theme has a valid form and not empty
+     *
+     * @return void
+     * @author Michael Strohyi
+     **/
+    private function validateTheme()
+    {
+        unset($this->errors['theme']);
+        $theme = $this->getTheme();
+
+        if (empty($theme)) {
+            $this->errors['theme'] = self::TICKET_REQUIRED_FIELD;
+            return;
+        }
+
+        # check if a theme has only allowed characters (printable only)
+        if (!ctype_print($theme)) {
+            echo "<hr>theme: $theme<hr>";
+            $this->errors['theme'] = self::TICKET_THEME_MALFORMED;
+            return;
+        }
+    }
+
+    /**
+     * Check if current messages are valid
+     *
+     * @return void
+     * @author Michael Strohyi
+     **/
+    private function validateMessages()
+    {
+        unset($this->errors['messages']);
+        $messages = $this->getMessages();
+        if (empty($messages)) {
+            return;
+        }
+
+        foreach ($messages as $key => $message) {
+            $message->validate();
+            if (!$message->isValid()) {
+                $this->errors['messages'] = 'not valid';
+            }
+        }
+    }
+
+    /**
+     * Return last message from messages array.
+     * If messages array is empty return false
+     *
+     * @return mixed
+     * @author Michael Strohyi
+     **/
+    public function getLastMessage()
+    {
+        return empty($this->messages) ? false : end($this->messages);
+    }
+
+    /**
+     * Gather messages information from the given $info.
+     * Keep non-existing fields empty.
+     *
+     * @param  array $info
+     * @return self
+     * @author Michael Strohyi
+     **/
+    public function fetchMessages($info)
+    {
+        if (!empty($info)) {
+            foreach ($info as $key => $value) {
+                if ($key == 'new') {
+                    $message = new TicketMessage($this);
+                    $message->fetchInfo($value);
+                    $this->messages[] = $message;
+                } else {
+                    $this->getMessages()[$key]->fetchInfo($value);
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Prepare given $theme to use in Ticket
+     *
+     * @param string $theme
+     * @return string
+     * @author Michael Strohyi
+     **/
+    private function prepareTheme($theme)
+    {
+        $theme = trim(preg_replace('/\s+/', ' ',  $theme));
+        return $theme;
+    }
+
+
+    /**
+     * Save ticket's data into db and return true. If error happens return false.
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function save()
+    {
+        # return true if ticket vars were not modified
+        if (!$this->isModified) {
+            return true;
+        }
+
+        # flag to show if new id is generated by query
+        $new_id = false;
+
+        #get current time
+        $date_time_obj = new DateTime();
+        $current_time = $date_time_obj->format('Y-m-d H:i:s');
+
+        # make query
+        if ($this->exists()) {
+            $ticket_data = ['status' => $this->getStatus(),
+                'timeUpdated' => $current_time,
+                ];
+            $query = "UPDATE `ticket` SET " . _QUpdate($ticket_data) . " WHERE `id` = " . $this->getId();
+        } else {
+            $ticket_data = ['merchantId' => $this->getCustomer()->getId(),
+                'theme' => $this->getTheme(),
+                'timeCreated' => $current_time,
+                'timeUpdated' => $current_time,
+                'status' => self::TICKET_STATUS_ACTIVE,
+                ];
+            $query = "INSERT INTO `tickets` " . _QInsert($ticket_data);
+            $new_id = true;
+        }
+
+        # run query
+        $res = _QExec($query);
+
+        # return false if error happens trying run query
+        if ($res === false) {
+            return false;
+        }
+
+        # set new id if it exists
+        if ($new_id) {
+            $this->id = _QID();
+        }
+
+        # save all ticket's messages into db and return false if error occured
+        if (!$this->saveMessages()) {
+            return false;
+        }
+
+        # reset isModified flag
+        $this->isModified = false;
+
+        return true;
+    }
+
+    /**
+     * Return field $name as a string in specific format if it exists and has DateTime type.
+     * Otherwise return empty string
+     *
+     * @param string $name
+     * @return string
+     * @author Michael Strohyi
+     **/
+    public function getFormattedDate($name)
+    {
+        if (property_exists($this, $name) && $this->$name instanceof DateTime) {
+            return $this->$name->format('d-m-Y H:i:s');
+        }
+
+        return '';
+    }
+
+    /**
+     * Save ticket's messages into db and return true. If error happens return false.
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    private function saveMessages()
+    {
+        $no_error = true;
+
+        foreach ($this->getMessages() as $key => $message) {
+            if (!$message->save()) {
+                $no_error = false;
+            }
+        }
+
+        $this->getMessagesList();
+        return $no_error;
+    }
 }
