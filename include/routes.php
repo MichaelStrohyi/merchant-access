@@ -94,6 +94,23 @@ function getPath($route_name, $params = [])
             $location = '/accounts/new_password.php?id=' . $customer->getId() . '&hash=' . $customer->getHash();
             break;
 
+        case 'ticket_info':
+            $location = '/accounts/tickets/ticket_info.php?id=';
+            break;
+
+        case 'ticket_close':
+            $location = '/accounts/tickets/ticket_close.php?id=';
+            break;
+
+        case 'ticket_add':
+            $location = '/accounts/tickets/ticket_add.php';
+            break;
+
+        case 'tickets':
+            $location = '/accounts/tickets/';
+            break;
+
+
         default:
             $location = null;
             break;
