@@ -24,8 +24,9 @@
         <td>{{ ticket.theme }}</td>
         <td>{{ ticket.status }}</td>
         <td>{{ ticket.lastWriter }}</td>
-        <td>{{ ticket.timeUpdated }}</td>   
-        <td><a href="{{ routes.ticket_close }}{{ ticket.id }}">Close</a></td>      
+        <td>{{ ticket.formattedDate('timeUpdated') }}</td>
+        <td><a href="{{ routes.ticket_info }}{{ ticket.id }}">View</a><br/>
+            <a href="{{ routes.ticket_close }}{{ ticket.id }}">Close</a></td>
       </tr>
       {% endfor %}
     </tbody>
