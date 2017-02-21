@@ -21,6 +21,7 @@ if (!empty($form_data)) {
     $ticket
         ->fetchInfo($form_data)
         ->validate()
+        ->getLastMessage()->setUserId($customer->getId())
         ;
 
     if ($ticket->isValid()) {
@@ -43,7 +44,6 @@ if (!empty($form_data)) {
 }
 
 # display ticket add page with errors if any exist}
-
 echo $twig->render('Tickets/ticket-add.html.twig', [
     'ticket' => $ticket,
     ]);

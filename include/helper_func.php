@@ -108,39 +108,64 @@ function isUrlValid($url)
 /**
  * Render html-template with error-string according to $error.
  *
- * @param App\Store $store
+ * @param array $param
  * @param string $error
  * @return void
  * @author Michael Strohyi
  **/
-function showErrorPage($store, $error)
+function showErrorPage($param, $error)
 {
     $twig = getTwig();
 
-    switch ($error) {
-      case 'access_denied':
-        echo $twig->render('Stores/store-access-denied.html.twig', [
-            'message' => 'You have no permission to work with this store',
-            'url' => getPath('stores'),
-            ]);
-        break;
+    if (isset($param['store'])) {
+      $store = $param['store'];
+      switch ($error) {
+        case 'access_denied':
+          echo $twig->render('Stores/store-access-denied.html.twig', [
+              'message' => 'You have no permission to work with this store',
+              'url' => getPath('stores'),
+              ]);
+          break;
 
-      case 'store_removed':
-        echo $twig->render('Stores/store-access-denied.html.twig', [
-            'message' => 'This store is waiting for removing validation. Please click validation link from email or <a href="' . getPath('resend_rm_verification', ['store' => $store]) . '">click here</a> to request new validation email',
-            'url' => getPath('stores'),
-            ]);
-        break;
+        case 'store_removed':
+          echo $twig->render('Stores/store-access-denied.html.twig', [
+              'message' => 'This store is waiting for removing validation. Please click validation link from email or <a href="' . getPath('resend_rm_verification', ['store' => $store]) . '">click here</a> to request new validation email',
+              'url' => getPath('stores'),
+              ]);
+          break;
 
-      case 'store_not_active':
-        echo $twig->render('Stores/store-access-denied.html.twig', [
-            'message' => 'You have not validated this store ownership yet. Please, validate it or <a href="' . getPath('resend_verification', ['store' => $store]) . '">click here</a> to request new validation email',
-            'url' => getPath('stores'),
-            ]);
-        break;
+        case 'store_not_active':
+          echo $twig->render('Stores/store-access-denied.html.twig', [
+              'message' => 'You have not validated this store ownership yet. Please, validate it or <a href="' . getPath('resend_verification', ['store' => $store]) . '">click here</a> to request new validation email',
+              'url' => getPath('stores'),
+              ]);
+          break;
+      }
+
+      return;
+    }
+
+    if (isset($param['ticket'])) {
+      $ticket = $param['ticket'];
+      switch ($error) {
+        case 'access_denied':
+          echo $twig->render('Tickets/ticket-access-denied.html.twig', [
+              'message' => 'You have no permission to work with this ticket',
+              'url' => getPath('tickets'),
+              ]);
+          break;
+
+        case 'ticket_closed':
+          echo $twig->render('Tickets/ticket-access-denied.html.twig', [
+              'message' => 'This ticket is closed. If you still have question please open <a href="' . getPath('ticket_add') . '">new ticket</a>',
+              'url' => getPath('tickets'),
+              ]);
+          break;
+      }
+
+      return;
     }
 }
-
 /**
  * Return true if given $date has a valid form.
  *

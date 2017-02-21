@@ -16,11 +16,11 @@ $customer = getLoggedCustomer();
 
 $store = new App\Store($customer, $store_id);
 
-$access_error = $customer->checkStoreAccess($store);
+$access_error = $customer->checkAccess(['store' => $store]);
 $store_not_active = $store->isWaitingValidation();
 
 if (!empty($access_error) && !$store_not_active) {
-    showErrorPage($store, $access_error);
+    showErrorPage(['store' => $store], $access_error);
     exit;
 }
 

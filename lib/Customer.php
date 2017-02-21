@@ -647,23 +647,39 @@ class Customer
     }
 
     /**
-     * Check if customer has access to $store. Rreturn null if customer has access, otherwise return error-string
-     * @param App\Store $store
+     * Check if customer has access to requested resource. Rreturn null if customer has access, otherwise return error-string
+     * @param array $params
      * @return string
      * @author Michael Strohyi
      **/
-    public function checkStoreAccess($store)
+      public function checkAccess($params)
     {
-        if (!$store->exists()) {
-            return 'access_denied';
+        if (isset($params['store'])) {
+            $store = $params['store'];
+
+            if (!$store->exists()) {
+                return 'access_denied';
+            }
+
+            if ($store->isWaitingRemoving()) {
+                return 'store_removed';
+            }
+
+            if (!$store->isActive()) {
+                return 'store_not_active';
+            }
         }
 
-        if ($store->isWaitingRemoving()) {
-            return 'store_removed';
-        }
+        if (isset($params['ticket'])) {
+            $ticket = $params['ticket'];
 
-        if (!$store->isActive()) {
-            return 'store_not_active';
+            if (!$ticket->exists()) {
+                return 'access_denied';
+            }
+
+            if (!$ticket->isActive()) {
+                return 'ticket_closed';
+                }
         }
 
         return null;
