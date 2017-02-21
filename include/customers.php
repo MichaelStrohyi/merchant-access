@@ -29,6 +29,10 @@ function emailConfirmation($template, $params = [])
             $subject = 'Password recovery for account at ' . SIGNUP_SERVER;
             $email = $params['customer']->getEmail();
             break;
+        case 'ticket_added':
+            $subject = 'You have opened ticket at ' . SIGNUP_SERVER;
+            $email = $params['customer']->getEmail();
+            break;
         
         default:
             $subject = '';

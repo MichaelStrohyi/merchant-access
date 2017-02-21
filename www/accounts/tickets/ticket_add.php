@@ -33,6 +33,11 @@ if (!empty($form_data)) {
             exit;
         }
 
+        # send email with link to view ticket
+        emailConfirmation('ticket_added', ['ticket' => $ticket,
+            'customer' => $customer,
+            ]);
+
         # display success ticket adding page
         echo $twig->render('Tickets/success-ticket-add.html.twig', [
             'ticket' => $ticket,

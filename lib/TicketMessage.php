@@ -288,7 +288,6 @@ class TicketMessage
                 'userId' => $this->getUserId(),
                 ];
             $query = "INSERT INTO `ticket_messages` " . _QInsert($message_data);
-                echo $query;
             $new_id = true;
         }
 

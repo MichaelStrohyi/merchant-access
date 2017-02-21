@@ -110,6 +110,10 @@ function getPath($route_name, $params = [])
             $location = '/accounts/tickets/';
             break;
 
+        case 'ticket_added':
+            $ticket = $params['ticket'];
+            $location = '/accounts/tickets/ticket_info.php?id=' . $ticket->getId();
+            break;
 
         default:
             $location = null;

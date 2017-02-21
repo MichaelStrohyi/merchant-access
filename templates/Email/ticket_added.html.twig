@@ -1,0 +1,5 @@
+{% extends 'base_email.html.twig' %}
+{% block body %}
+Hello {{ customer.name }}.</br>
+Yo have just opened new ticket at {{ server }}. You can view this ticket's details through the next link: <a href="http://{{ server }}{{ validation_link|raw }}">click to view ticket</a>
+{% endblock %}
