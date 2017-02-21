@@ -23,10 +23,13 @@
         <td><a href="{{ routes.ticket_info }}{{ ticket.id }}">{{ ticket.id }}</a></td>
         <td>{{ ticket.theme }}</td>
         <td>{{ ticket.status }}</td>
-        <td>{{ ticket.lastWriter }}</td>
+        <td>{{ ticket.lastAuthor }}</td>
         <td>{{ ticket.formattedDate('timeUpdated') }}</td>
         <td><a href="{{ routes.ticket_info }}{{ ticket.id }}">View</a><br/>
-            <a href="{{ routes.ticket_close }}{{ ticket.id }}">Close</a></td>
+            {% if ticket.isActive %}
+            <a href="{{ routes.ticket_close }}{{ ticket.id }}">Close</a>
+            {% endif %}
+        </td>
       </tr>
       {% endfor %}
     </tbody>

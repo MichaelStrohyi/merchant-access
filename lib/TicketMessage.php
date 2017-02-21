@@ -34,6 +34,13 @@ class TicketMessage
      * @var DateTime
      **/
     private $timeCreated;
+    
+    /**
+     * userId
+     *
+     * @var int
+     **/
+    private $userId;
 
     /**
      * Errors
@@ -42,7 +49,7 @@ class TicketMessage
      **/
     private $errors;
  
-    public function __construct($ticket , $id = null)
+    public function __construct($ticket, $id = null)
     {
         $this->ticket = $ticket;
         $this->loadMessageData($id);
@@ -153,6 +160,7 @@ class TicketMessage
         $this->id = $id;
         $this->body = $res_element['body'];
         $this->timeCreated = new DateTime($res_element['timeCreated']);
+        $this->userId = $res_element['userId'];
     }
 
     /**
@@ -168,7 +176,7 @@ class TicketMessage
     }
 
     /**
-     * Return message information gathered from the given $info. 
+     * Return message information gathered from the given $info.
      * Keep non-existing fields empty.
      *
      * @param  array $info
@@ -180,7 +188,7 @@ class TicketMessage
         if (!empty($info['body'])) {
             $this->setBody($info['body']);
         }
-        
+
         return $this;
     }
 
@@ -277,9 +285,10 @@ class TicketMessage
             $message_data = ['ticketId' => $this->getTicket()->getId(),
                 'body' => $this->prepareTextForDb($this->getBody()),
                 'timeCreated' => $current_time,
-                'userId' => $this->getTicket()->getCustomer()->getId(),
+                'userId' => $this->getUserId(),
                 ];
             $query = "INSERT INTO `ticket_messages` " . _QInsert($message_data);
+                echo $query;
             $new_id = true;
         }
 
@@ -311,6 +320,34 @@ class TicketMessage
     private function prepareTextForDb($text)
     {
         return strip_tags($text);
+    }
+
+    /**
+     * Return userId
+     *
+     * @return int
+     * @author Michael Strohyi
+     **/
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    /**
+     * Set userId to $userId
+     *
+     * @param string $label
+     * @return self
+     * @author Michael Strohyi
+     **/
+    public function setUserId($userId)
+    {
+        if ($this->userId != $userId) {
+            $this->userId = $userId;
+            $this->isModified = true;
+        }
+
+        return $this;
     }
 
 }

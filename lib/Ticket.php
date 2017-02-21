@@ -9,6 +9,8 @@ class Ticket
     const TICKET_THEME_MALFORMED = 'Theme contains deprecated characters. Allowed only printable characters.';
     const TICKET_STATUS_ACTIVE = 'active';
     const TICKET_STATUS_CLOSED = 'closed';
+    const LAST_AUTHOR_OPERATOR = 'operator';
+    const LAST_AUTHOR_CUSTOMER = 'you';
 
     /**
      * Identifier (from the db)
@@ -530,7 +532,7 @@ class Ticket
     public function getFormattedDate($name)
     {
         if (property_exists($this, $name) && $this->$name instanceof DateTime) {
-            return $this->$name->format('d-m-Y H:i:s');
+            return $this->$name->format('m-d-Y H:i:s');
         }
 
         return '';
@@ -554,5 +556,42 @@ class Ticket
 
         $this->getMessagesList();
         return $no_error;
+    }
+
+    /**
+     * Return true if ticket has status 'active', otherwise return false
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function isActive()
+    {
+        return $this->getStatus() == self::TICKET_STATUS_ACTIVE;
+    }
+
+     /**
+     * Set 'closed' status for ticket and return true.
+     * Return false if some error happens.
+     *
+     * @return boolean
+     * @author Michael Strohyi
+     **/
+    public function closeTicket()
+    {
+        $query = "UPDATE `tickets` SET `status` = '".self::TICKET_STATUS_CLOSED."' WHERE `id` = " . $this->getId();
+
+        return  _QExec($query) != false;
+    }
+
+    /**
+     * Return author of the last message of current ticket.
+     * Return false if thera are no messages in the ticket.
+     *
+     * @return mixed
+     * @author Michael Strohyi
+     **/
+    public function getLastAuthor()
+    {
+        return  $this->getLastMessage()->getUserId() == -1 ? self::LAST_AUTHOR_OPERATOR : self::LAST_AUTHOR_CUSTOMER;
     }
 }
