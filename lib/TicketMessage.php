@@ -6,6 +6,8 @@ use DateTime;
 class TicketMessage
 {
     const MESSAGE_REQUIRED_FIELD = 'This is a required field.';
+    const MESSAGE_AUTHOR_OPERATOR = 'operator';
+    const MESSAGE_AUTHOR_CUSTOMER = 'you';
 
     /**
      * Identifier (from the db)
@@ -225,8 +227,7 @@ class TicketMessage
     private function validateBody()
     {
         unset($this->errors['body']);
-        $body= $this->getBody();
-
+        $body = $this->getBody();
         if (empty($body)) {
             $this->errors['body'] = self::MESSAGE_REQUIRED_FIELD;
             return;
@@ -349,4 +350,31 @@ class TicketMessage
         return $this;
     }
 
+    /**
+     * Return field $name as a string in specific format if it exists and has DateTime type.
+     * Otherwise return empty string
+     *
+     * @param string $name
+     * @return string
+     * @author Michael Strohyi
+     **/
+    public function getFormattedDate($name)
+    {
+        if (property_exists($this, $name) && $this->$name instanceof DateTime) {
+            return $this->$name->format('m-d-Y H:i');
+        }
+
+        return '';
+    }
+
+    /**
+     * Return author of message.
+     *
+     * @return string
+     * @author Michael Strohyi
+     **/
+    public function getAuthor()
+    {
+        return  $this->getUserId() == -1 ? self::MESSAGE_AUTHOR_OPERATOR : self::MESSAGE_AUTHOR_CUSTOMER;
+    }
 }
