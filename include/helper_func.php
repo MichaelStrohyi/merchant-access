@@ -154,13 +154,6 @@ function showErrorPage($param, $error)
               'url' => getPath('tickets'),
               ]);
           break;
-
-        case 'ticket_closed':
-          echo $twig->render('Tickets/ticket-access-denied.html.twig', [
-              'message' => 'This ticket is closed. If you still have question please open <a href="' . getPath('ticket_add') . '">new ticket</a>',
-              'url' => getPath('tickets'),
-              ]);
-          break;
       }
 
       return;

@@ -676,10 +676,6 @@ class Customer
             if (!$ticket->exists()) {
                 return 'access_denied';
             }
-
-            if (!$ticket->isActive()) {
-                return 'ticket_closed';
-                }
         }
 
         return null;
