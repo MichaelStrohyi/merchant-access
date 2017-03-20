@@ -92,3 +92,41 @@ div.container {
 body.reg_form {
 background-color: lightblue;
 }
+.ticket-table {
+    padding: 10px;
+    margin: 10px;
+    width: 800px;
+}
+.ticket-table tbody tr {
+    border-top: 1px solid #ddd;
+}
+.message-author {
+    width: 18%;
+    vertical-align: top;
+    padding-top: 10px;
+}
+.message-body {
+    text-align: justify;
+}
+.message-body pre {
+    font-size: 1em;
+    margin: 10px;
+}
+.message-date {
+    color: #ccc;
+}
+.new-message {
+    padding: 5px;
+    margin: 5px;
+    width: 800px;
+}
+.new-message textarea{
+    resize: none;
+}
+.closed-ticket {
+    width: 800px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2em;
+    padding: 10px;
+}

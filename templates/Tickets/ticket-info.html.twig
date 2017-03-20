@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ticket #{{ ticket.id }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+      <div id='messages-history'>
+        <table class="ticket-table">
+          <thead>
+            <tr>
+              <th class="centered">From</th>
+              <th class="centered">Message</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for message in ticket.messages %}
+              {% if message.id is not null %}
+                <tr class="ticket-message">
+                  <td class="message-author">{{ message.author }}<br><span class="message-date">{{ message.formattedDate('timeCreated') }}</span></td>
+                 <td class="message-body"><pre>{{ message.body }}</pre></td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+          </tbody> 
+        </table>
+      </div>
+
+      {% if not ticket.active %}  
+        <div class="closed-ticket">
+          This ticket is closed. If you have any question please open new ticket.
+        </div>
+      {% endif %}
+      
+      <div id="ticket-form" width>
+        <form method="post" name="ticket_form" class="new-message">
+          {% if ticket.active %}
+            <div class="form-group {{ ticket.lastMessage.hasError('body') ? 'has-error' : '' }}">
+              <label for="inputMessage" class="control-label">Add new message</label>
+                <textarea class="form-control" id="textareaMessage" placeholder="Type your message here" name="ticket[messages][new][body]" rows="5">{{ ticket.lastMessage.id is null ? ticket.lastMessage.body: '' }}</textarea>
+                {% if ticket.lastMessage.hasError('body') %}
+                  <span id="helpBlock" class="help-block">{{ ticket.nlastMessage.errorString('body') }}</span>
+                {% endif %}
+            </div> 
+          {% endif %}
+          <div class="form-group">
+              <input type="hidden" class="form-control" id="inputId" name="ticket[id]" value="{{ ticket.id }}">
+              {% if ticket.active %}
+                <button type="submit" class="btn btn-default" name="ticket[buttonSubmit]">Send</button>
+              {% endif %}
+              <button type="submit" class="btn btn-default" name="ticket[buttonCancel]">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+   {% if alert == 'saved' %}
+  <script> alert('Your message has been added successfully');</script>
+  {% endif %}
+{% endblock %}
